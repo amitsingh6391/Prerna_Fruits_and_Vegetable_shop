@@ -1,9 +1,11 @@
-import 'package:e_commerce/cartdelievery.dart';
+
 import 'package:e_commerce/color.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 import "package:http/http.dart" as http;
+import "package:e_commerce/bottomnavbar.dart";
 
 class cart extends StatefulWidget {
   @override
@@ -20,7 +22,7 @@ class _cartState extends State<cart> {
    super.initState();
 
   }
- var numberodproduct;
+ var numberodproduct=[];
  var cartitem;
 var userid;
 
@@ -46,10 +48,17 @@ fetchcartitem() async {
    numberodproduct=json.decode(response.body);
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
+    
+
     setState(() {
       numberodproduct  = json.decode(response.body);
       cartitem = preferences.getInt("cartitem");
     });
+
+    preferences.setInt("cartitem",numberodproduct.last["TotQty"]);
+    var number= preferences.getInt("cartitem");
+    print("*************8$number");
+
     print(response.statusCode);
     print("hii");
 
@@ -58,10 +67,8 @@ fetchcartitem() async {
     if (response.statusCode == 200) {
       print(response.statusCode);
 
-      print(numberodproduct );
-      print(numberodproduct .length);
-
-      //print(pendingitem[0]["transaction_uid"]);
+      print(numberodproduct);
+     
     } else {
       numberodproduct  = [];
       print("345");
@@ -97,7 +104,7 @@ cartitemremove(var itemid, var qty) async {
       print(numberodproduct );
       print(numberodproduct .length);
 
-      //print(pendingitem[0]["transaction_uid"]);
+     
 
       Navigator.push(
                                              context,
@@ -107,6 +114,95 @@ cartitemremove(var itemid, var qty) async {
       print("345");
     }
   }
+
+//confirmation dialog...
+
+showAlertDialog(BuildContext context , var total) {
+    Widget okbtn = FlatButton(
+      child: Text("Yes"),
+      onPressed: () {
+       // Navigator.pop(context);
+       Navigator.of(context,rootNavigator:true).pop();
+       checkout(total);
+      },
+    );
+
+    Widget nobtn = FlatButton(
+      child: Text("No"),
+      onPressed: () {
+        //Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=>main2()));
+      Navigator.of(context,rootNavigator:true).pop();
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("Confirm"),
+      content: Text("Are you sure that you want to complete this order "),
+      actions: [okbtn,nobtn],
+    );
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        });
+  }
+
+
+  //checkout cart...........
+
+List oredrstatus;
+  checkout(var total) async {
+    
+
+    String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/CheckOut?UID=$userid&OrderTot=$total";
+
+    print("apiUrl***********88");
+    print(apiUrl);
+    http.Response response = await http.get(apiUrl);
+
+   oredrstatus =json.decode(response.body);
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    
+
+    setState(() {
+     oredrstatus  = json.decode(response.body);
+      
+    });
+
+    preferences.setInt("cartitem",numberodproduct.last["TotQty"]);
+    var number= preferences.getInt("cartitem");
+    print("*************8$number");
+
+    print(response.statusCode);
+    
+
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      print("Oredrs placed");
+
+       Fluttertoast.showToast(
+        msg: "Your Order No ${oredrstatus[0]["OrderNo"]} is Successfully Placed.",
+        fontSize: 15,
+        backgroundColor: Colors.black,
+        toastLength: Toast.LENGTH_LONG,
+        textColor: Colors.white,
+      );
+
+       SharedPreferences preferences = await SharedPreferences.getInstance();
+       preferences.setInt("cartitem",0);
+
+      Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=>main2()));
+      
+
+      
+    } else {
+      oredrstatus = [];
+      print("345");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -121,8 +217,9 @@ cartitemremove(var itemid, var qty) async {
           child: Container(
             margin:
                       EdgeInsets.only(top: 10, left: 5, right: 5, bottom: 5),
+                   
               color:Colors.white,
-              height:105,
+              height:120,
               child: numberodproduct.length == 0 || numberodproduct.length == null
                   ? Text("")
                   : Column(
@@ -132,33 +229,67 @@ cartitemremove(var itemid, var qty) async {
                        
                         Row(
                           children:[
-                            Text("SubTotal:  ",style:TextStyle(fontSize:15)),
+                            Text("SubTotal  ",style:TextStyle(fontSize:12)),
                             Spacer(),
-                            Text(numberodproduct.last["Total"].toString(),),
+                            Text(" ₹ ",style:TextStyle(fontSize:12)),
+                            Text(numberodproduct.last["Total"].toString(),
+                            style:TextStyle(fontSize:12)),
                             SizedBox(width:10),
                           ]
                         ),
+                         SizedBox(height:5),
                         Row(
                           children:[
-                            Text("Delivery Charge  :  ",style:TextStyle(fontSize:15)),
+                            Text("Delivery Charge    ",style:TextStyle(fontSize:12)),
                             Spacer(),
-                            Text("  0  ",),
+                             Text(" ₹ ",style:TextStyle(fontSize:12)),
+                            Text("0  ",style:TextStyle(fontSize:12)),
                             SizedBox(width:10),
                           ]
                         ),
+                        //SizedBox(height:5),
+
                          Row(
                           children:[
-                            Text("Total  :  ",style:TextStyle(fontSize:15,color:x,fontWeight:FontWeight.bold)),
+                            Text("Total    ",style:TextStyle(fontSize:14,fontWeight:FontWeight.bold)),
                             Spacer(),
-                            Text(numberodproduct.last["Total"].toString()
-                            ,style:TextStyle(fontSize:15,color:x,fontWeight:FontWeight.bold)),
-                            SizedBox(width:10),
+                             Text(" ₹ ",style:TextStyle(fontSize:14)),
+                           Text( numberodproduct.last["Total"].toString()
+                            ,style:TextStyle(fontSize:14,fontWeight:FontWeight.bold)),
+                            SizedBox(width:10,height:30),
                           ]
                         ),
+                        //  Row(
+                        //   children:[
+                        //     Text("Total    ",style:TextStyle(fontSize:12,color:Colors.black,fontWeight:FontWeight.bold)),
+                        //     Spacer(),
+                        //     Text( numberodproduct.last["Total"].toString()
+                        //     ,style:TextStyle(fontSize:15,color:x,fontWeight:FontWeight.bold)),
+                        //     SizedBox(width:20),
+                        //   ]
+                        // ),
 
-                        Container(
+                      GestureDetector(
+                          onTap:(){
+                            showAlertDialog(context,numberodproduct.last["Total"]);
 
-                          color:x,
+                          //  checkout(numberodproduct.last["Total"]);
+
+                          },
+                          child:Container(
+
+
+
+                         decoration: BoxDecoration(
+       color:x,
+          borderRadius: BorderRadius.circular(0),
+          boxShadow: [
+            BoxShadow(
+               color:Colors.white,
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3))
+          ]),
 
                           child:Row(
                            children:[
@@ -168,18 +299,23 @@ cartitemremove(var itemid, var qty) async {
                               Center(
                                
                                 
-                                child:Text("Total ${numberodproduct.last["TotQty"]} items  ₹.${numberodproduct.last["Total"]} ",
+                                child:Text("  Total ${numberodproduct.last["TotQty"]} item(s)  ₹ ${numberodproduct.last["Total"]} ",
                                 style:TextStyle(fontSize:17,fontWeight:FontWeight.bold,color:Colors.white))
                               
                             ),
+
+
+Spacer(),
+                            Text("Checkout",style:TextStyle(fontSize:17,fontWeight:FontWeight.bold,color:Colors.white)),
+                            SizedBox(width:10),
+                            Icon(Icons.arrow_forward,color:Colors.white),
                             
-                            //Icon(Icons.checkout),
                             
                             SizedBox(height:50)
                             
                            ]
                           )
-                        )
+                       ))
                       ],
                     )),
         ),
@@ -188,9 +324,18 @@ cartitemremove(var itemid, var qty) async {
               ? Container(
                   child: Center(
                       child: Center(
-                  child:
-                      CircularProgressIndicator(backgroundColor: Colors.green),
-                )))
+
+                       child: Column(children:[
+
+//CircularProgressIndicator(backgroundColor: Colors.green),
+SizedBox(height:size.height*0.4),
+Text("Your cart is empty ",style:TextStyle(fontSize:25))
+                        ]),
+                
+                      
+                )
+                )
+                )
               : ListView.builder(
                   shrinkWrap: true,
                   physics: ScrollPhysics(),
@@ -209,7 +354,7 @@ cartitemremove(var itemid, var qty) async {
                       },
                       child: Card(
                         child: Container(
-                          height: size.height * 0.177,
+                          height: size.height * 0.164,
                           color: Colors.white,
                           child: Column(
                             children: [
@@ -257,65 +402,17 @@ cartitemremove(var itemid, var qty) async {
                                         SizedBox(width:50),
                                         
                                       ]),
-                                      SizedBox(height: 10),
-                                      Row(children: [
-                                        Text("M.R.P :  ₹"),
-                                        Text(
-                                          numberodproduct[index]["Rate"].toString(),
-                                          style:
-                                              TextStyle(color: Colors.black45),
-                                        )
-                                      ]),
-                                      SizedBox(height: 10),
-                                      Container(
+
+                                       Container(
                                           margin: EdgeInsets.only(right: 100),
                                           child: Text(
                                             numberodproduct[index]["Weight"]
                                                 .toString(),
                                             style: TextStyle(
                                                 color: Colors.black,
-                                                fontWeight: FontWeight.bold),
+                                               ),
                                           )),
-                                      SizedBox(height: 10),
-                                     
-                                     
-                                      Row(
-        children: <Widget>[
-
-          Text("Qty:   "),
-            Container(
-                                          margin: EdgeInsets.only(right: 0),
-                                          child: Text(
-                                            numberodproduct[index]["Qty"]
-                                                .toString(),
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold),
-                                          )),
-
-
-
-
-                                           
-
-
-                                          SizedBox(
-                                            width:size.width*0.05
-                                          ),
-
-                                          GestureDetector(
-                                            onTap:(){
-
-                                              cartitemremove(
-                                               numberodproduct[index]["CartID"].toString(),
-                                                numberodproduct[index]["Qty"].toString());
-
-                                            },
-                                            child:Icon(Icons.delete,color:x))
-                    
-        ],
-      ),
-SizedBox(height: 10),
+                                          SizedBox(height: 10),
       Row(
         children:[
           Container(
@@ -328,7 +425,7 @@ SizedBox(height: 10),
                                                 fontWeight: FontWeight.bold),
                                           )),
 
-                                          Text("X"),
+                                          Text("  X  ",style:TextStyle(fontSize:12)),
                                            Container(
                                           margin: EdgeInsets.only(right: 0),
                                           child: Text(
@@ -349,8 +446,112 @@ SizedBox(height: 10),
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold),
                                           )),
+SizedBox(width:size.width*0.15),
+
+
+//Spacer(),
+
+
+                                                                           Container(
+                                                                             //alignment:Alignment.centerRight,
+                                                                             child:
+                                                                              GestureDetector(
+                                            onTap:(){
+
+                                              cartitemremove(
+                                               numberodproduct[index]["CartID"].toString(),
+                                                numberodproduct[index]["Qty"].toString());
+
+                                            },
+                                            child:Icon(Icons.close,color:x))),
         ]
-      )
+      ),
+                                      SizedBox(height: 10),
+                                      // Row(children: [
+                                      //   Text("M.R.P :  ₹"),
+                                      //   Text(
+                                      //     numberodproduct[index]["Rate"].toString(),
+                                      //     style:
+                                      //         TextStyle(color: Colors.black45),
+                                      //   )
+                                      // ]),
+                                     // SizedBox(height: 10),
+                                     
+                                    
+                                     
+                                     
+      //                                 Row(
+      //   children: <Widget>[
+
+      //     Text("Qty:   "),
+      //       Container(
+      //                                     margin: EdgeInsets.only(right: 0),
+      //                                     child: Text(
+      //                                       numberodproduct[index]["Qty"]
+      //                                           .toString(),
+      //                                       style: TextStyle(
+      //                                           color: Colors.black,
+      //                                           fontWeight: FontWeight.bold),
+      //                                     )),
+
+
+
+
+                                           
+
+
+      //                                     SizedBox(
+      //                                       width:size.width*0.05
+      //                                     ),
+
+      //                                     GestureDetector(
+      //                                       onTap:(){
+
+      //                                         cartitemremove(
+      //                                          numberodproduct[index]["CartID"].toString(),
+      //                                           numberodproduct[index]["Qty"].toString());
+
+      //                                       },
+      //                                       child:Icon(Icons.delete,color:x))
+                    
+      //   ],
+      // ),
+// SizedBox(height: 10),
+//       Row(
+//         children:[
+//           Container(
+//                                           margin: EdgeInsets.only(right: 0),
+//                                           child: Text(
+//                                             numberodproduct[index]["Rate"]
+//                                                 .toString(),
+//                                             style: TextStyle(
+//                                                 color: Colors.black,
+//                                                 fontWeight: FontWeight.bold),
+//                                           )),
+
+//                                           Text("X"),
+//                                            Container(
+//                                           margin: EdgeInsets.only(right: 0),
+//                                           child: Text(
+//                                             numberodproduct[index]["Qty"]
+//                                                 .toString(),
+//                                             style: TextStyle(
+//                                                 color: Colors.black,
+//                                                 fontWeight: FontWeight.bold),
+//                                           )),
+
+
+//                                            Container(
+//                                           margin: EdgeInsets.only(right: 0),
+//                                           child: Text(
+//                                             "       ₹ ${numberodproduct[index]["MRP"]
+//                                                 .toString()}",
+//                                             style: TextStyle(
+//                                                 color: Colors.black,
+//                                                 fontWeight: FontWeight.bold),
+//                                           )),
+//         ]
+//       )
                                     ],
                                   )
                                 ],

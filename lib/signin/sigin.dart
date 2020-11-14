@@ -47,9 +47,11 @@ signin() async {
     var name = data[0]["Name"];
 
     var cartitem = data[0]["CartItem"];
-   SharedPreferences preferences = await SharedPreferences.getInstance();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setInt('cartitem',cartitem);
     preferences.setString('Id',id);
+    preferences.setString('name',name);
+    preferences.setString('number',data[0]["Mobile"]);
     print(id);
     print(name);
     print("******data*******");

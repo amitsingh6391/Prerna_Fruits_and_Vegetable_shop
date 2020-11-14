@@ -7,6 +7,7 @@ import 'faq.dart';
 import "referearn.dart";
 import "notification.dart";
 import "package:e_commerce/homepage.dart";
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:e_commerce/signin/sigin.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,9 @@ import 'about.dart';
 import 'contact.dart';
 import 'privacy.dart';
 import 'terms.dart';
+import "profile.dart";
 import "package:e_commerce/signin/forgotpass.dart";
+
 
 class drawerr extends StatefulWidget {
   @override
@@ -36,6 +39,25 @@ class _drawerrState extends State<drawerr> {
   }
 
   @override
+  void initState(){
+    getuserdetails();
+super.initState();
+  }
+
+  var username,usernumber,id;
+getuserdetails() async{
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+    // preferences.setInt('cartitem',cartitem);
+
+    setState((){
+      username = preferences.getString("name");
+      usernumber = preferences.getString("number");
+      id = preferences.getString("Id");
+
+    });
+
+}
+  @override
   Widget build(BuildContext context) {
     return Drawer(
 
@@ -48,13 +70,32 @@ class _drawerrState extends State<drawerr> {
             child: ListView(
                 children: <Widget>[
 
-                  Container(
+                  Column(
+                    children:[
+Container(
 
-                      height: 180,color:x,
+                      height: 150,width:400,color:x,
                       child:Image(
                         //color:Colors.green,
                           image:NetworkImage("http://pfv.wonsoft.co.in/images/logo.png"))
 
+                  ),
+
+                  Container(
+                    color:x,
+                    width:400,
+                    child:Column(
+                      children:[
+                        Text(username,
+                  style: GoogleFonts.caveatBrush(
+                            color: Colors.white, fontSize: 20),),
+                            Text(usernumber,
+                  style: GoogleFonts.caveatBrush(
+                            color: Colors.white, fontSize: 20),)
+                      ]
+                    )
+                  )
+                    ]
                   ),
                   GestureDetector(
                     onTap:(){
@@ -96,42 +137,42 @@ class _drawerrState extends State<drawerr> {
                   GestureDetector(
                     onTap: (){
                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => notification()),);
+                        MaterialPageRoute(builder: (context) =>profile(id:id)),);
                     },
                     child:  Container(
                       margin: EdgeInsets.only(left:15,top:10),
                       child: ListTile(
                         title: Row(
                           children: [
-                            Icon(Icons.notifications,color: Colors.black45,size: 28,),
+                            Icon(Icons.person,color: Colors.black45,size: 28,),
                             Container(margin: EdgeInsets.only(left: 20
                             ),
-                                child: Text("Notifications",style: TextStyle(color: Colors.black),))
+                                child: Text("Profile",style: TextStyle(color: Colors.black),))
                           ],
                         ),
                       ),
 
                     ),
                   ),
-              GestureDetector(onTap: (){
-                Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => wallet()),);
-              },
-                child: Container(
-                  margin: EdgeInsets.only(left: 15,top: 10),
-                  child: ListTile(
-                    title: Row(
-                      children: [
-                        Icon(Icons.account_balance_wallet,color: Colors.black45,size: 28,),
-                        Container(margin: EdgeInsets.only(left: 20
-                        ),
+              // GestureDetector(onTap: (){
+              //   Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => wallet()),);
+              // },
+              //   child: Container(
+              //     margin: EdgeInsets.only(left: 15,top: 10),
+              //     child: ListTile(
+              //       title: Row(
+              //         children: [
+              //           Icon(Icons.account_balance_wallet,color: Colors.black45,size: 28,),
+              //           Container(margin: EdgeInsets.only(left: 20
+              //           ),
 
-                            child: Text("Wallet Balance",style: TextStyle(color: Colors.black),))
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              //               child: Text("Wallet Balance",style: TextStyle(color: Colors.black),))
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
 
 
                   GestureDetector(onTap:(){
@@ -165,109 +206,109 @@ class _drawerrState extends State<drawerr> {
                         )
                       ],),)
                   )),
-                  GestureDetector(onTap: (){
-                    Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => refer()),);
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(left: 15,top: 10),
-                    child: ListTile(title: Row(children: [
-                      Icon(Icons.person_add,color: Colors.black45,size: 28,),
-                      Container(margin: EdgeInsets.only(left: 20),
-                        child: Text("Refer & Earn",style: TextStyle(color: Colors.black),),
-                      )
-                    ],)),
-                  ),),
-                  GestureDetector(onTap:(){
-                    Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => contact()),);
-                  },
-                    child:Container(
-                        margin: EdgeInsets.only(left: 15,top: 10),
-                        child: ListTile(title: Row(children: [
-                          Icon(Icons.contact_page,color: Colors.black45,size: 28,),
-                          Container(margin: EdgeInsets.only(left: 20),
-                            child: Text("Contact Us",style: TextStyle(color: Colors.black),),
-                          )
-                        ],),)
-                    ),),
-                  GestureDetector(onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => about()),);
-                  },
-                    child: Container(
-                      margin: EdgeInsets.only(left: 15,top: 10),
-                      child: ListTile(title: Row(children: [
-                        Icon(Icons.info,color: Colors.black45,size: 28,),
-                        Container(margin: EdgeInsets.only(left:20),
-                          child: Text("About Us",style: TextStyle(color: Colors.black),),
-                        )
-                      ],)),
-                    ),),
-                  GestureDetector(onTap: () {
-                    LaunchReview.launch(
-                      // androidAppId: "com.iyaffle.kural",
-                      // iOSAppId: "585027354",
-                    );
-                  },
-                    child: Container(
-                      margin: EdgeInsets.only(left: 15,top:10),
-                      child: ListTile(title: Row(children: [
-                        Icon(Icons.star_outline,color: Colors.black45,size: 28,),
-                        Container(margin: EdgeInsets.only(left:20),
-                          child: Text("Rate Us",style: TextStyle(color: Colors.black),),
-                        )
-                      ],)),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: (){
-                      share();
-                    },
-                    child: Container(
-                        margin: EdgeInsets.only(left: 15, top:10),
-                        child: ListTile(title: Row(children: [
-                          Icon(Icons.share,color: Colors.black45,size: 28,),
-                          Container(margin:EdgeInsets.only(left:20),
-                            child: Text("Share App",style: TextStyle(color: Colors.black),),
-                          )
-                        ],))
-                    ),
-                  ),
+                  // GestureDetector(onTap: (){
+                  //   Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => refer()),);
+                  // },
+                  // child: Container(
+                  //   margin: EdgeInsets.only(left: 15,top: 10),
+                  //   child: ListTile(title: Row(children: [
+                  //     Icon(Icons.person_add,color: Colors.black45,size: 28,),
+                  //     Container(margin: EdgeInsets.only(left: 20),
+                  //       child: Text("Refer & Earn",style: TextStyle(color: Colors.black),),
+                  //     )
+                  //   ],)),
+                  // ),),
+                  // GestureDetector(onTap:(){
+                  //   Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => contact()),);
+                  // },
+                  //   child:Container(
+                  //       margin: EdgeInsets.only(left: 15,top: 10),
+                  //       child: ListTile(title: Row(children: [
+                  //         Icon(Icons.contact_page,color: Colors.black45,size: 28,),
+                  //         Container(margin: EdgeInsets.only(left: 20),
+                  //           child: Text("Contact Us",style: TextStyle(color: Colors.black),),
+                  //         )
+                  //       ],),)
+                  //   ),),
+                  // GestureDetector(onTap: (){
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(builder: (context) => about()),);
+                  // },
+                  //   child: Container(
+                  //     margin: EdgeInsets.only(left: 15,top: 10),
+                  //     child: ListTile(title: Row(children: [
+                  //       Icon(Icons.info,color: Colors.black45,size: 28,),
+                  //       Container(margin: EdgeInsets.only(left:20),
+                  //         child: Text("About Us",style: TextStyle(color: Colors.black),),
+                  //       )
+                  //     ],)),
+                  //   ),),
+                  // GestureDetector(onTap: () {
+                  //   LaunchReview.launch(
+                  //     // androidAppId: "com.iyaffle.kural",
+                  //     // iOSAppId: "585027354",
+                  //   );
+                  // },
+                  //   child: Container(
+                  //     margin: EdgeInsets.only(left: 15,top:10),
+                  //     child: ListTile(title: Row(children: [
+                  //       Icon(Icons.star_outline,color: Colors.black45,size: 28,),
+                  //       Container(margin: EdgeInsets.only(left:20),
+                  //         child: Text("Rate Us",style: TextStyle(color: Colors.black),),
+                  //       )
+                  //     ],)),
+                  //   ),
+                  // ),
+                  // GestureDetector(
+                  //   onTap: (){
+                  //     share();
+                  //   },
+                  //   child: Container(
+                  //       margin: EdgeInsets.only(left: 15, top:10),
+                  //       child: ListTile(title: Row(children: [
+                  //         Icon(Icons.share,color: Colors.black45,size: 28,),
+                  //         Container(margin:EdgeInsets.only(left:20),
+                  //           child: Text("Share App",style: TextStyle(color: Colors.black),),
+                  //         )
+                  //       ],))
+                  //   ),
+                  // ),
 
-                  GestureDetector(onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => faq()),);},
+                  // GestureDetector(onTap: (){
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(builder: (context) => faq()),);},
 
-                    child:
-                    Container(
-                        margin: EdgeInsets.only(left:15, top:10),
-                        child: ListTile(title: Row(children: [
-                          Icon(Icons.help,color: Colors.black45,size: 28,),
-                          Container(margin:EdgeInsets.only(left:20),
-                            child: Text("FAQ",style: TextStyle(color: Colors.black),),
-                          )
-                        ],),)
-                    ),),
-                  GestureDetector(onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => terms()),);
-                  },
+                  //   child:
+                  //   Container(
+                  //       margin: EdgeInsets.only(left:15, top:10),
+                  //       child: ListTile(title: Row(children: [
+                  //         Icon(Icons.help,color: Colors.black45,size: 28,),
+                  //         Container(margin:EdgeInsets.only(left:20),
+                  //           child: Text("FAQ",style: TextStyle(color: Colors.black),),
+                  //         )
+                  //       ],),)
+                  //   ),),
+                  // GestureDetector(onTap: (){
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(builder: (context) => terms()),);
+                  // },
 
-                    child:
-                    Container(
-                        margin: EdgeInsets.only(left:15, top:10),
-                        child: ListTile(title: Row(children: [
-                          Icon(Icons.event_note,color: Colors.black45,size: 28,),
-                          Container(margin:EdgeInsets.only(left:20),
-                            child:  Text("Terms & Conditions",style: TextStyle(color: Colors.black),),
-                          )
-                        ],),)
-                    ),
-                  ),
+                  //   child:
+                  //   Container(
+                  //       margin: EdgeInsets.only(left:15, top:10),
+                  //       child: ListTile(title: Row(children: [
+                  //         Icon(Icons.event_note,color: Colors.black45,size: 28,),
+                  //         Container(margin:EdgeInsets.only(left:20),
+                  //           child:  Text("Terms & Conditions",style: TextStyle(color: Colors.black),),
+                  //         )
+                  //       ],),)
+                  //   ),
+                  // ),
                   GestureDetector(
                     onTap:() async{
 
@@ -293,20 +334,21 @@ class _drawerrState extends State<drawerr> {
                     ),
 
                   ),
-                  GestureDetector(onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => privacy()),);
-                  },
-                    child:Container(
-                        margin: EdgeInsets.only(left:15, top:10),
-                        child: ListTile(title: Row(children: [
-                          Icon(Icons.policy,color: Colors.black45,size: 28,),
-                          Container(margin:EdgeInsets.only(left:20),
-                            child: Text("Privacy Policy",style: TextStyle(color: Colors.black),),
-                          )
-                        ],),)
-                    ),
-                  )    ])));
+                  // GestureDetector(onTap: (){
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(builder: (context) => privacy()),);
+                  // },
+                  //   child:Container(
+                  //       margin: EdgeInsets.only(left:15, top:10),
+                  //       child: ListTile(title: Row(children: [
+                  //         Icon(Icons.policy,color: Colors.black45,size: 28,),
+                  //         Container(margin:EdgeInsets.only(left:20),
+                  //           child: Text("Privacy Policy",style: TextStyle(color: Colors.black),),
+                  //         )
+                  //       ],),)
+                  //   ),
+                  // )    
+                  ])));
   }
 }

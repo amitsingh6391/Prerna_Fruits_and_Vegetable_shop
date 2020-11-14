@@ -2,7 +2,9 @@ import 'package:e_commerce/color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "package:e_commerce/productdetail.dart";
+import "package:e_commerce/cart.dart";
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class SearchBar extends StatefulWidget {
   @override
@@ -53,6 +55,7 @@ List<String> listweight;
 List<String> listprice;
 
 int _indx =0;
+var cartitem;
  fetchlikeddata() async{
 
       SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -84,6 +87,7 @@ int _indx =0;
       listweight = preferences.getStringList('listweight');
       
       listprice= preferences.getStringList('listprice');
+      cartitem = preferences.getInt("cartitem");
 
       
 
@@ -114,10 +118,32 @@ int _indx =0;
               Container(margin: EdgeInsets.only(top: 30,left: 40,right: 20,bottom: 10),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("   Prerna",style: GoogleFonts.caveatBrush(color: Colors.white,fontSize:33),),
+                    Text(" Prerna fruits and Vegetables",style: GoogleFonts.caveatBrush(color: Colors.white,fontSize:20),),
 
 
-                    Icon(Icons.shopping_cart,color: Colors.white,)
+                 Stack(
+                        children: [
+                         GestureDetector(
+                            onTap:(){
+
+                            Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => cart(
+                              )));
+
+                            },
+                            child:Icon(Icons.shopping_cart)),
+                          CircleAvatar(
+                              radius: 7,
+                              backgroundColor: Colors.red,
+                              child: Text(cartitem.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10)))
+                        ],
+                      )
                   ],
                 ),
               ),
@@ -165,7 +191,7 @@ int _indx =0;
                  child: Card(
                   
                 child: Container(
-                  height:size.height*0.19,color: Colors.white,
+                  height:size.height*0.13,color: Colors.white,
                   child: Column(
                     children: [
                      
@@ -197,6 +223,10 @@ int _indx =0;
 
                                   SizedBox(width:20),
 
+                                  //Spacer(),
+
+                                  
+
                                  
                                   
 
@@ -209,41 +239,18 @@ int _indx =0;
                                 children:[
                                   Text("M.R.P : "),
                                   Text(listprice[index].toString(),style: TextStyle(color: Colors.black45),
-                                  )
-                                  ]),SizedBox(height:10),
-                              
-                              Container(margin: EdgeInsets.only(bottom: 30,right: 100),
-                                  child: Text(listweight[index].toString(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)),
-                              Container(
-                                
-                                alignment: Alignment.centerRight,
-                                child: Container(
-                                  child: Row(mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      // GestureDetector(onTap:(){
-                                      //   setState(() {
-                                      //     if (_indx ==0)
-                                      //     {
-                                      //       print("null value");
-                                      //     }
-                                      //     else
-                                      //       _indx--;
-                                      //   });
-                                      // },
-                                      //   child: Container(margin: EdgeInsets.only(right: 7),
-                                      //       child: Icon(Icons.remove_circle,color: x,)),
-                                      // ),
-                                      // Text("$_indx"),
-                                      // GestureDetector(onTap:(){
-                                      //   setState(() {
-                                      //     _indx++;
-                                      //   });
-                                      // },
-                                      //   child: Container(margin: EdgeInsets.only(left: 7),
-                                      //       child: Icon(Icons.add_circle,color: x,)),
-                                      // ),
+                                  ),
+                                 
+                                 
+                                  ]),
+                                  SizedBox(height:10),
 
-                                IconButton(
+                                  Row(children:[
+
+                                     Container(margin: EdgeInsets.only(bottom: 30,right: 100),
+                                  child: Text(listweight[index].toString(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)),
+
+                                      IconButton(
                                     icon:Icon(Icons.delete,color:x),
                                     onPressed:() async{
 
@@ -285,10 +292,10 @@ int _indx =0;
                                     }
                                   )
 
-                                    ],
-                                  ),
-                                ),
-                              ),
+                                  ]),
+                              
+                             
+                             
                             
                             ],
                           )

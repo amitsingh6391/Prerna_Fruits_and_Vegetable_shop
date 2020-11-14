@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      title: "MyApp",
+      title: "Prerna fruits and Vegetables",
       //home:Homescreen(),
       home: SplashScreen(),
     );

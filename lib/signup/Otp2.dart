@@ -1,5 +1,4 @@
-import 'package:e_commerce/bottomnavbar.dart';
-import 'package:e_commerce/signup/signup2.dart';
+
 import "package:e_commerce/services/updatepassword.dart";
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:e_commerce/color.dart';
 import "package:http/http.dart" as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Otp2 extends StatefulWidget {
   var otp, mobilenumber;
@@ -55,6 +55,9 @@ class _Otp2State extends State<Otp2> {
     print(y);
     print(id);
 
+     SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('Id',id);
+
     print(response.body);
     if (response.statusCode == 200 && y == "Success") {
       print("ok fine");
@@ -64,7 +67,7 @@ class _Otp2State extends State<Otp2> {
         loading = false;
       });
 
-      Navigator.push(
+      Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Setpassword(id: id)));
     } else {
       setState(() {

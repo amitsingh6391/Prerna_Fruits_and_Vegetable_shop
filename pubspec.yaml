@@ -29,7 +29,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
   launch_review: ^2.0.0
-  clipboard_manager: ^0.0.1
+  # clipboard_manager: ^0.0.1
   country_code_picker: ^1.6.2
   pin_entry_text_field: ^0.1.4
   geolocator: '^5.1.1'

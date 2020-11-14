@@ -12,15 +12,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 
-class signup2 extends StatefulWidget {
+class UpdateProfile extends StatefulWidget {
   var id;
-  signup2({@required this.id});
+  UpdateProfile({@required this.id});
 
   @override
-  _signup2State createState() => _signup2State();
+  _UpdateProfileState createState() => _UpdateProfileState();
 }
 
-class _signup2State extends State<signup2> {
+class _UpdateProfileState extends State<UpdateProfile> {
   Position _currentPosition;
   bool check = false;
   TextEditingController emailEditingController = new TextEditingController();
@@ -40,7 +40,7 @@ class _signup2State extends State<signup2> {
 
   var name, email, mobile, address, city, area, pincode, gender,userid;
 
-  signup2() async {
+  UpdateProfile() async {
     if (userauth.currentState.validate()) {
       setState(() {
         userid = widget.id;
@@ -86,8 +86,13 @@ class _signup2State extends State<signup2> {
       print("ok fine");
       print(response.statusCode);
 
+      setState(() {
+        loading = false;
+      });
+
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      preferences.setInt('cartitem',0);
+      
+     
       preferences.setString('name',nameEditingController.text);
       preferences.setString('mail',emailEditingController.text);
       preferences.setString('pincode',pincodeEditingController.text);
@@ -95,22 +100,6 @@ class _signup2State extends State<signup2> {
        preferences.setString('gender',gender);
       preferences.setString('city',city);
       preferences.setString('area',area);
-
-
-       
-       preferences.setStringList('likeid',[]);
-   preferences.setStringList('listimg',[]);
-      preferences.setStringList('listhindiname',[]);
-     preferences.setStringList('listenglishname',[]);
-    preferences.setStringList('listweight',[]);
-     
-    preferences.setStringList('listprice',[]);
-
-      setState(() {
-        loading = false;
-      });
-
-     
 
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => main2()));
     } else {
@@ -464,54 +453,11 @@ Row(
 
 
                                     
-                                    // TextFormField(
-                                    //   controller: codeEditingController,
-                                    //   keyboardType: TextInputType.emailAddress,
-                                    //   inputFormatters: <TextInputFormatter>[
-                                    //     FilteringTextInputFormatter.digitsOnly
-                                    //   ],
-                                    //   decoration: new InputDecoration(
-                                    //     hintText: 'enter code',
-                                    //     labelText: 'Referal Code (optional)',
-                                    //   ),
-                                    // ),
+                               
                                   ],
                                 )),
                           ),
-                          // Row(
-                          //   children: [
-                          //     Theme(
-                          //       data: Theme.of(context).copyWith(
-                          //         unselectedWidgetColor: Colors.black,
-                          //       ),
-                          //       child: Checkbox(
-                          //         value: check,
-                          //         onChanged: (bool value) {
-                          //           setState(() {
-                          //             check = value;
-                          //           });
-                          //         },
-                          //       ),
-                          //     ),
-                          //     SizedBox(
-                          //       height: 100,
-                          //     ),
-                          //     // Container(
-                          //     //   margin: EdgeInsets.only(
-                          //     //       top: 20, bottom: 20, left: 10, right: 20),
-                          //     //   child: Column(
-                          //     //       mainAxisAlignment: MainAxisAlignment.start,
-                          //     //       children: [
-                          //     //         Text(
-                          //     //           "Accept Privacy Policy ",
-                          //     //           style: TextStyle(color: Colors.black),
-                          //     //           maxLines: 100,
-                          //     //         ),
-                                      
-                          //     //       ]),
-                          //     // )
-                          //   ],
-                          // ),
+                         
                           SizedBox(
                             height: 30,
                           ),
@@ -525,14 +471,14 @@ Row(
                               minWidth: 400.0,
                               height: 40.0,
                               child: RaisedButton(
-                                child: Text('Signup',
+                                child: Text('Update',
                                     style: TextStyle(
                                         fontSize: 16, color: Colors.white)),
                                 color: x,
                                 onPressed: () {
                                   if (userauth.currentState.validate()) {
                                     
-                                      signup2();
+                                      UpdateProfile();
                                     
                                   }
                                 },

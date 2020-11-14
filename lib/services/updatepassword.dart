@@ -64,7 +64,7 @@ print(userid);
         loading = false;
       });
 
-      Navigator.push(
+      Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => signup2(id: userid)));
     } else {
       setState(() {

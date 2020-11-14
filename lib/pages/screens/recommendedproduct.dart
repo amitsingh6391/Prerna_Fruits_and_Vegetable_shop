@@ -6,63 +6,56 @@ import "package:e_commerce/color.dart";
 import "package:e_commerce/productdetail.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 import "package:e_commerce/cart.dart";
+import 'package:google_fonts/google_fonts.dart';
 
-class Products extends StatefulWidget {
-  var category_id;
-  Products({@required this.category_id});
+class Recommendedproduct extends StatefulWidget {
+  
 
   @override
-  _ProductsState createState() => _ProductsState();
+  _RecommendedproductState createState() => _RecommendedproductState();
 }
 
-class _ProductsState extends State<Products> {
+class _RecommendedproductState extends State<Recommendedproduct> {
   var id;
 
 var cartitem;
-  List products = [];
+  List rproduct = [];
 
   fetchproduct() async {
-    setState(() {
-      id = widget.category_id;
-    });
+   
 
-    String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/GetProd?CatID=$id";
+    String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/GetFeatureProd";
     print("apiUrl***********88");
     print(apiUrl);
     http.Response response = await http.get(apiUrl);
 
-    products = json.decode(response.body);
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+    rproduct = json.decode(response.body);
+     SharedPreferences preferences = await SharedPreferences.getInstance();
+   
 
     setState(() {
-      products = json.decode(response.body);
+      rproduct = json.decode(response.body);
        cartitem = preferences.getInt("cartitem");
+       
     });
     print(response.statusCode);
     print("hii");
 
-    print(products);
+    
 
     if (response.statusCode == 200) {
       print(response.statusCode);
 
-      print(products);
-      print(products.length);
+     
 
       //print(pendingitem[0]["transaction_uid"]);
     } else {
-      products = [];
+      rproduct = [];
       print("345");
     }
   }
 
-  bool like = false;
-  Color grey = Colors.grey;
-  Color red = Colors.red;
-  var currentvariants;
-
-  var qty;
-  int _indx = 0;
+ 
 
 
    
@@ -70,8 +63,7 @@ var cartitem;
   @override
   void initState() {
     super.initState();
-    print("widget.category_id");
-    print(widget.category_id);
+    
     fetchproduct();
   }
 
@@ -84,19 +76,9 @@ var cartitem;
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text("Products      "),
-            // GestureDetector(
-            //   onTap: (){
-            //    // search();
-            //   },
-            //   child: Icon(Icons.search,color: Colors.white,),
-            // ),
-            // GestureDetector(
-            //   onTap: (){
-            //    // filter();
-            //   },
-            //   child: Icon(Icons.sort,color: Colors.white,),
-            // ),
+            Text("Most Selling Items",style: GoogleFonts.caveatBrush(
+                            color: Colors.white, fontSize: 20),),
+           
 
             SizedBox(width: 60),
             Stack(
@@ -126,7 +108,7 @@ var cartitem;
         ),
       ),
       body: Container(
-          child: products.length < 1
+          child: rproduct.length < 1
               ? Container(
                   child: Center(
                       child: Center(
@@ -136,13 +118,13 @@ var cartitem;
               : ListView.builder(
                   shrinkWrap: true,
                   physics: ScrollPhysics(),
-                  itemCount: products.length,
+                  itemCount: rproduct.length,
                   itemBuilder: (BuildContext context, int index) {
                     print("variants");
 
                     //print(variants);
 
-                    var qty = products[index]["Qty"];
+                    var qty = rproduct[index]["Qty"];
 
 
 
@@ -153,13 +135,13 @@ var cartitem;
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Productdetail(
-                                    product_id: products[index]["ID"],
-                                    productimg: products[index]["Img"],
-                                    hindiname: products[index]["NameH"],
-                                    englishname: products[index]["NameE"],
-                                    price: products[index]["Rate"],
-                                    weight: products[index]["Weight"],
-                                    variant: products[index]["Variants"])));
+                                    product_id: rproduct[index]["ID"],
+                                    productimg: rproduct[index]["Img"],
+                                    hindiname: rproduct[index]["NameH"],
+                                    englishname: rproduct[index]["NameE"],
+                                    price: rproduct[index]["Rate"],
+                                    weight: rproduct[index]["Weight"],
+                                    variant: rproduct[index]["Variants"])));
                       },
                       child: Card(
                         child: Container(
@@ -182,7 +164,7 @@ var cartitem;
                                             ),
                                             child: Image(
                                                 image: NetworkImage(
-                                                    products[index]["Img"]),
+                                                    rproduct[index]["Img"]),
                                                 fit: BoxFit.fill)),
                                       ],
                                     ),
@@ -195,14 +177,14 @@ var cartitem;
                                       SizedBox(height: 10),
                                       Row(children: [
                                         Text(
-                                          products[index]["NameE"].toString(),
+                                        rproduct[index]["NameE"].toString(),
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         SizedBox(width: 10),
                                         Text(
-                                          products[index]["NameH"].toString(),
+                                          rproduct[index]["NameH"].toString(),
                                           style:
                                               TextStyle(color: Colors.black45),
                                         )
@@ -211,7 +193,7 @@ var cartitem;
                                       Row(children: [
                                         Text("M.R.P :  ₹"),
                                         Text(
-                                          products[index]["Rate"].toString(),
+                                         rproduct[index]["Rate"].toString(),
                                           style:
                                               TextStyle(color: Colors.black45),
                                         )
@@ -220,7 +202,7 @@ var cartitem;
                                       Container(
                                           margin: EdgeInsets.only(right: 100),
                                           child: Text(
-                                            products[index]["Weight"]
+                                            rproduct[index]["Weight"]
                                                 .toString(),
                                             style: TextStyle(
                                                 color: Colors.black,
@@ -228,12 +210,7 @@ var cartitem;
                                           )),
                                       SizedBox(height: 10),
                                      
-                                      Row(
-        children: <Widget>[
-           
-                    
-        ],
-      ),
+         
                                     ],
                                   )
                                 ],

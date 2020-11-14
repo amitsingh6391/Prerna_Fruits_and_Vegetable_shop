@@ -3,27 +3,23 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce/cart.dart';
 import 'package:e_commerce/drawer/drawer.dart';
 import 'package:e_commerce/subgategories.dart';
-
+import "package:e_commerce/productdetail.dart";
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "package:e_commerce/cart.dart";
 import 'package:shared_preferences/shared_preferences.dart';
+import "package:e_commerce/pages/screens/recommendedproduct.dart";
 
 import 'categories.dart';
 import 'color.dart';
 import "package:http/http.dart" as http;
 import 'dart:convert';
-import 'package:e_commerce/bottomnavbar.dart';
-import 'package:e_commerce/signin/sigin.dart';
-import 'package:launch_review/launch_review.dart';
+
 import "package:e_commerce/pages/screens/product.dart";
 
-import 'drawer/about.dart';
-import 'drawer/contact.dart';
-import 'drawer/privacy.dart';
-import 'drawer/terms.dart';
+
 
 List category = [
   {
@@ -34,6 +30,17 @@ List category = [
     "Img": "http://pfv.wonsoft.co.in/images/cat/fruits.png"
   },
 ];
+
+List recommend_items=[
+   {
+    "Child": "wait",
+    "ID": 1,
+    "IsChild": false,
+    "Name": "Fruits",
+    "Img": "http://pfv.wonsoft.co.in/images/cat/fruits.png"
+  },
+]; 
+
 
 final bannerimg = "https://homepages.cae.wisc.edu/~ece533/images/mountain.png";
 final bannerimg2 =
@@ -63,6 +70,7 @@ class _main4State extends State<main4> {
   void initState() {
     super.initState();
     fetcategory();
+    recommendeditem();
   }
 
   var cartitem;
@@ -98,11 +106,45 @@ class _main4State extends State<main4> {
     }
   }
 
+
+
+   Future recommendeditem() async {
+   
+
+    http.Response response =
+        await http.get("http://pfv.wonsoft.co.in/API/Post.asmx/GetFeatureProd");
+
+    recommend_items = json.decode(response.body);
+
+    setState(() {
+      recommend_items = json.decode(response.body);
+      
+    });
+    print(response.statusCode);
+    print("hii");
+
+    print(recommend_items);
+
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+
+      print(recommend_items);
+   
+
+      //print(pendingitem[0]["transaction_uid"]);
+    } else {
+      recommend_items = [];
+      print("345");
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    // size = MeidaQuery.of(context).size;
     return Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
+          preferredSize: const Size.fromHeight(110),
           child: AppBar(
             flexibleSpace: Column(
               children: [
@@ -113,9 +155,9 @@ class _main4State extends State<main4> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "   Prerna fruits and Vegetables",
+                        "   Prerna Fruits and Vegetables",
                         style: GoogleFonts.caveatBrush(
-                            color: Colors.white, fontSize: 20),
+                            color: Colors.white, fontSize: 22),
                       ),
                       Stack(
                         children: [
@@ -137,7 +179,7 @@ class _main4State extends State<main4> {
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 15)))
+                                      fontSize: 10)))
                         ],
                       )
                     ],
@@ -215,7 +257,7 @@ class _BodyState extends State<Body> {
             ),
           ),
           card2(),
-          card4(),
+         // card4(),
           listcard()
         ],
       ),
@@ -246,8 +288,8 @@ class _cardState extends State<card> {
   }
 
   List banners = [
-    "https://homepages.cae.wisc.edu/~ece533/images/fruits.png",
-    "https://png.pngtree.com/png-clipart/20190515/original/pngtree-orange-png-png-image_3619070.jpg"
+    "http://pfv.wonsoft.co.in/images/banner/0.jpg",
+    
   ];
 
 //here we fetch all he banners this is first part of our body...
@@ -319,7 +361,7 @@ class _cardState extends State<card> {
                                   image: NetworkImage(
                                     item,
                                   ),
-                                  fit: BoxFit.cover),
+                                  fit: BoxFit.fill),
                               border: Border.all(width: 1, color: Colors.white),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20))),
@@ -549,6 +591,10 @@ class listcard extends StatefulWidget {
 }
 
 class _listcardState extends State<listcard> {
+
+
+
+  //http://pfv.wonsoft.co.in/API/Post.asmx/GetFeatureProd
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -564,9 +610,9 @@ class _listcardState extends State<listcard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Recommended Items",
+                    "Most Selling Items",
                     style: TextStyle(
-                        color: x, fontWeight: FontWeight.bold, fontSize: 18),
+                         fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   ButtonTheme(
                     minWidth: 60,
@@ -576,7 +622,7 @@ class _listcardState extends State<listcard> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => categories()));
+                                builder: (context) =>Recommendedproduct()));
                         //View All
                       },
                       shape: RoundedRectangleBorder(
@@ -598,7 +644,20 @@ class _listcardState extends State<listcard> {
                   scrollDirection: Axis.horizontal,
                   itemCount: 4,
                   itemBuilder: (context, index) {
-                    return Card(
+                    return GestureDetector(
+                      onTap:(){
+                         Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Productdetail(
+                                    product_id: recommend_items[index]["ID"],
+                                    productimg: recommend_items[index]["Img"],
+                                    hindiname:recommend_items[index]["NameH"],
+                                    englishname:recommend_items[index]["NameE"],
+                                    price: recommend_items[index]["Rate"],
+                                    weight:recommend_items[index]["Weight"],
+                                    variant:recommend_items[index]["Variants"])));
+                      },child:Card(
                         child: Container(
                             margin: EdgeInsets.only(
                                 left: 20, right: 20, bottom: 10),
@@ -606,10 +665,16 @@ class _listcardState extends State<listcard> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                // Image(image: NetworkImage(card2img[index])),
-                                Text(card2txt[index])
+                               Image(image: NetworkImage(recommend_items[index]["Img"])),
+                               Row(
+                                 children:[
+                                    Text(recommend_items[index]["NameE"],style:TextStyle(fontSize:12)),
+                                    SizedBox(width:4), Text(recommend_items[index]["NameH"],
+                                     style:TextStyle(fontSize:12))
+                                 ]
+                               )
                               ],
-                            )));
+                    ))));
                   },
                 ),
               )

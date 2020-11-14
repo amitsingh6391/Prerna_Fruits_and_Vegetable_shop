@@ -1,8 +1,8 @@
-import 'package:clipboard_manager/clipboard_manager.dart';
+//import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:e_commerce/color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_share/flutter_share.dart';
 class refer extends StatefulWidget {
   @override
@@ -73,16 +73,16 @@ class _referState extends State<refer> {
                           FlatButton(
                             child: Text('Tap to Copy',style: TextStyle(color: x),),
                             onPressed: () {
-                              ClipboardManager.copyToClipBoard(txt).then((result) {
-                                final snackBar = SnackBar(
-                                  content: Text('Copied to Clipboard'),
-                                  action: SnackBarAction(
-                                    label: 'Undo',
-                                    onPressed: () {},
-                                  ),
-                                );
-                                Scaffold.of(context).showSnackBar(snackBar);
-                              });
+                              // ClipboardManager.copyToClipBoard(txt).then((result) {
+                              //   final snackBar = SnackBar(
+                              //     content: Text('Copied to Clipboard'),
+                              //     action: SnackBarAction(
+                              //       label: 'Undo',
+                              //       onPressed: () {},
+                              //     ),
+                              //   );
+                              //   Scaffold.of(context).showSnackBar(snackBar);
+                              // });
                             },
                           )
                         ],

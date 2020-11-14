@@ -56,7 +56,7 @@ class _signupState extends State<signup> {
         loading = false;
       });
 
-      Navigator.push(
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => Otp2(otp: otp, mobilenumber: number)));

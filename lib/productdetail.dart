@@ -29,6 +29,7 @@ class _ProductdetailState extends State<Productdetail> {
   void initState(){
 
   super.initState();
+  fetchcartnumber();
   fetchlikeditem();
   print(widget.weight);
 
@@ -43,6 +44,7 @@ List<String> listprice;
 List result=[];
 var cartitem;
 var userid;
+var number;
 var pid,wt,rt;
  addproduct(var itemnumber) async {
     setState(() {
@@ -72,8 +74,6 @@ String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/ItemAdd?UID=$userid&PID=
     var newitemnumber = result[0]["ItemCount"];
   print(newitemnumber);
 
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setInt('cartitem',newitemnumber);
 
     setState((){
       cartitem = newitemnumber;
@@ -82,6 +82,7 @@ String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/ItemAdd?UID=$userid&PID=
 
     if (response.statusCode == 200) {
       print(response.statusCode);
+      fetchcartnumber();
 
      
     } else {
@@ -91,6 +92,61 @@ String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/ItemAdd?UID=$userid&PID=
   }
 
 
+
+
+
+//getcart number   ........
+
+
+
+fetchcartnumber() async {
+    
+var userid;
+     SharedPreferences preferences = await SharedPreferences.getInstance();
+   setState((){
+     userid = preferences.getString("Id");
+   });
+print("userid");
+   print(userid);
+
+    String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/Cart?UID=$userid";
+   
+    print(apiUrl);
+    http.Response response = await http.get(apiUrl);
+
+   var numberofproduct=json.decode(response.body);
+  
+
+    
+
+    setState(() {
+      numberofproduct=json.decode(response.body);
+      preferences.setInt("cartitem",numberofproduct.last["TotQty"]);
+      number= preferences.getInt("cartitem");
+     
+    });
+
+    // preferences.setInt("cartitem",numberofproduct.last["TotQty"]);
+    // number= preferences.getInt("cartitem");
+    print("*************8$number");
+
+    print(response.statusCode);
+    print("hii");
+
+    print(numberofproduct);
+
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+
+      print(numberofproduct);
+      print(numberofproduct.length);
+
+      //print(pendingitem[0]["transaction_uid"]);
+    } else {
+      numberofproduct= [];
+      print("345");
+    }
+  }
 
 
 //decrease item number...
@@ -124,8 +180,7 @@ String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/ItemDel?UID=$userid&PID=
   var newitemnumber = result[0]["ItemCount"];
   print(newitemnumber);
 
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setInt('cartitem',newitemnumber);
+   
 
      setState((){
       cartitem = newitemnumber;
@@ -133,11 +188,8 @@ String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/ItemDel?UID=$userid&PID=
 
     if (response.statusCode == 200) {
       print(response.statusCode);
-
-      // print(products);
-      // print(products.length);
-
-      //print(pendingitem[0]["transaction_uid"]);
+fetchcartnumber();
+     
     } else {
     result = [];
       print("345");
@@ -160,19 +212,7 @@ String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/ItemDel?UID=$userid&PID=
       userid = preferences.getString("Id");
      
      
-      print('likedlist');
-      print(likeid);
-      print('likedlist');
-      print(listimg);
-      print('likedlist');
-      print(listhindiname);
-      print('likedlist');
-      print(listenglishname);
-      print('likedlist');
-      print(listweight);
-      print('likedlist');
-      print(listprice);
-      print("userid***********$userid");
+      
      
 
       setState((){
@@ -253,7 +293,7 @@ String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/ItemDel?UID=$userid&PID=
         title:  Container(
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("   Prerna",style: GoogleFonts.caveatBrush(color: Colors.white,fontSize:33),),
+              Text(" Prerna fruits and Vegetables",style: GoogleFonts.caveatBrush(color: Colors.white,fontSize:20),),
 
 
               
@@ -273,11 +313,11 @@ String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/ItemDel?UID=$userid&PID=
                           CircleAvatar(
                               radius: 7,
                               backgroundColor: Colors.red,
-                              child: Text(cartitem.toString(),
+                              child: Text(number.toString(),
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 15)))
+                                      fontSize: 10)))
                         ],
                       )
             ],
@@ -345,7 +385,7 @@ setState((){
 
                           },
                           child:
-                          Icon(Icons.favorite_outlined,color:like?x:Colors.grey)),
+                          Icon(Icons.favorite_outlined,size:30,color:like?x:Colors.grey)),
                        
                         //Share(),
 //                         GestureDetector(
@@ -366,14 +406,16 @@ setState((){
                        Container(margin: EdgeInsets.only(left: 20),
                           child: Text(widget.englishname,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700),)),
                       SizedBox(width:5),Container(margin: EdgeInsets.only(left: 20),
-                          child: Text(widget.hindiname,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700),)),
+                          child: Text(widget.hindiname, style:
+                                              TextStyle(color: Colors.black45),
+                          )),
                     ],
                   ),
                   Container(margin: EdgeInsets.only(left: 20,top: 20),
                     child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                            child: Text(" Price:₹ ${widget.price}",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 17),)),
+                            child: Text("M.R.P :  ₹ ${widget.price}",)),
                         Container(padding: EdgeInsets.all(8),
                           margin: EdgeInsets.only(left: 10),
                          // width: 150,
@@ -386,7 +428,9 @@ setState((){
                     children: [
                       Container(
                         margin: EdgeInsets.only(top: 20,left: 20),
-                        child: Text(widget.weight),
+                        child: Text(widget.weight, style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
@@ -454,6 +498,12 @@ removeproduct(_indx.toString());
                 child: Text('Go to Cart', style: TextStyle(fontSize:16,color:Colors.white)),
                 color: x,
                 onPressed: () {
+
+                   Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => cart(
+                              )));
 
                 },
               )
