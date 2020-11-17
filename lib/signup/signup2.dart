@@ -6,8 +6,9 @@ import 'package:e_commerce/color.dart';
 import 'package:geolocator/geolocator.dart';
 import "package:http/http.dart" as http;
 import 'dart:convert';
-
+import "package:e_commerce/signin/sigin.dart";
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 
@@ -110,9 +111,15 @@ class _signup2State extends State<signup2> {
         loading = false;
       });
 
-     
+     Fluttertoast.showToast(
+        msg: "Your Account is Successfully created Please login ",
+        fontSize: 15,
+        backgroundColor: Colors.black,
+        toastLength: Toast.LENGTH_LONG,
+        textColor: Colors.white,
+      );
 
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => main2()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>sigin()));
     } else {
       print("Not hirt");
       print("345");

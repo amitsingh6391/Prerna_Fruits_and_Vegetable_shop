@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import "package:http/http.dart" as http;
 import "package:e_commerce/bottomnavbar.dart";
+import "package:e_commerce/drawer/trackorder.dart";
 
 class cart extends StatefulWidget {
   @override
@@ -193,7 +194,7 @@ List oredrstatus;
        SharedPreferences preferences = await SharedPreferences.getInstance();
        preferences.setInt("cartitem",0);
 
-      Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=>main2()));
+      Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=>FirstTab()));
       
 
       
@@ -446,7 +447,7 @@ Text("Your cart is empty ",style:TextStyle(fontSize:25))
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold),
                                           )),
-SizedBox(width:size.width*0.15),
+SizedBox(width:size.width*0.14),
 
 
 //Spacer(),
