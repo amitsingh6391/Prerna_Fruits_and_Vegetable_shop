@@ -1,6 +1,15 @@
 # e_commerce
 
-A E-Commerce application.
+This is fully fetured  E-Commerce application in flutter.
+
+some of screen shot:
+
+![prerna4](https://user-images.githubusercontent.com/57305134/101153255-32a3af80-364a-11eb-8970-0d06ce851123.jpg)
+![prerna3](https://user-images.githubusercontent.com/57305134/101153223-2586c080-364a-11eb-91e1-ccbc51e42d1b.jpg)
+![prerna2](https://user-images.githubusercontent.com/57305134/101153238-2a4b7480-364a-11eb-9c7b-800ea2a2e5fe.jpg)
+
+![prerna1](https://user-images.githubusercontent.com/57305134/101153278-39cabd80-364a-11eb-8609-3e237682fbcf.jpg)
+
 
 ## Getting Started
 
