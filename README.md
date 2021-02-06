@@ -1,6 +1,6 @@
 # e_commerce
 
-This is fully fetured  E-Commerce application in flutter.
+This is fully fetured  Grocery application in flutter.
 
 some of screen shot:
 
