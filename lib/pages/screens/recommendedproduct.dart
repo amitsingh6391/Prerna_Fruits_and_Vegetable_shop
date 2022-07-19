@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:http/http.dart" as http;
 import 'dart:convert';
@@ -9,8 +8,6 @@ import "package:e_commerce/cart.dart";
 import 'package:google_fonts/google_fonts.dart';
 
 class Recommendedproduct extends StatefulWidget {
-  
-
   @override
   _RecommendedproductState createState() => _RecommendedproductState();
 }
@@ -18,35 +15,27 @@ class Recommendedproduct extends StatefulWidget {
 class _RecommendedproductState extends State<Recommendedproduct> {
   var id;
 
-var cartitem;
-  List rproduct = [];
+  var cartitem;
+  List? rproduct = [];
 
   fetchproduct() async {
-   
-
     String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/GetFeatureProd";
     print("apiUrl***********88");
     print(apiUrl);
-    http.Response response = await http.get(apiUrl);
+    http.Response response = await http.get(Uri.parse(apiUrl));
 
     rproduct = json.decode(response.body);
-     SharedPreferences preferences = await SharedPreferences.getInstance();
-   
+    SharedPreferences preferences = await SharedPreferences.getInstance();
 
     setState(() {
       rproduct = json.decode(response.body);
-       cartitem = preferences.getInt("cartitem");
-       
+      cartitem = preferences.getInt("cartitem");
     });
     print(response.statusCode);
     print("hii");
 
-    
-
     if (response.statusCode == 200) {
       print(response.statusCode);
-
-     
 
       //print(pendingitem[0]["transaction_uid"]);
     } else {
@@ -55,15 +44,10 @@ var cartitem;
     }
   }
 
- 
-
-
-   
-
   @override
   void initState() {
     super.initState();
-    
+
     fetchproduct();
   }
 
@@ -76,39 +60,34 @@ var cartitem;
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text("Most Selling Items",style: GoogleFonts.caveatBrush(
-                            color: Colors.white, fontSize: 20),),
-           
-
+            Text(
+              "Most Selling Items",
+              style: GoogleFonts.caveatBrush(color: Colors.white, fontSize: 20),
+            ),
             SizedBox(width: 60),
             Stack(
-                        children: [
-                         GestureDetector(
-                            onTap:(){
-
-                            Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => cart(
-                              )));
-
-                            },
-                            child:Icon(Icons.shopping_cart)),
-                          CircleAvatar(
-                              radius: 7,
-                              backgroundColor: Colors.red,
-                              child: Text(cartitem.toString(),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10)))
-                        ],
-                      )
+              children: [
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => cart()));
+                    },
+                    child: Icon(Icons.shopping_cart)),
+                CircleAvatar(
+                    radius: 7,
+                    backgroundColor: Colors.red,
+                    child: Text(cartitem.toString(),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10)))
+              ],
+            )
           ],
         ),
       ),
       body: Container(
-          child: rproduct.length < 1
+          child: rproduct!.length < 1
               ? Container(
                   child: Center(
                       child: Center(
@@ -118,15 +97,13 @@ var cartitem;
               : ListView.builder(
                   shrinkWrap: true,
                   physics: ScrollPhysics(),
-                  itemCount: rproduct.length,
+                  itemCount: rproduct!.length,
                   itemBuilder: (BuildContext context, int index) {
                     print("variants");
 
                     //print(variants);
 
-                    var qty = rproduct[index]["Qty"];
-
-
+                    var qty = rproduct![index]["Qty"];
 
                     return Card(
                         child: GestureDetector(
@@ -135,13 +112,13 @@ var cartitem;
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Productdetail(
-                                    product_id: rproduct[index]["ID"],
-                                    productimg: rproduct[index]["Img"],
-                                    hindiname: rproduct[index]["NameH"],
-                                    englishname: rproduct[index]["NameE"],
-                                    price: rproduct[index]["Rate"],
-                                    weight: rproduct[index]["Weight"],
-                                    variant: rproduct[index]["Variants"])));
+                                    product_id: rproduct![index]["ID"],
+                                    productimg: rproduct![index]["Img"],
+                                    hindiname: rproduct![index]["NameH"],
+                                    englishname: rproduct![index]["NameE"],
+                                    price: rproduct![index]["Rate"],
+                                    weight: rproduct![index]["Weight"],
+                                    variant: rproduct![index]["Variants"])));
                       },
                       child: Card(
                         child: Container(
@@ -164,7 +141,7 @@ var cartitem;
                                             ),
                                             child: Image(
                                                 image: NetworkImage(
-                                                    rproduct[index]["Img"]),
+                                                    rproduct![index]["Img"]),
                                                 fit: BoxFit.fill)),
                                       ],
                                     ),
@@ -177,14 +154,14 @@ var cartitem;
                                       SizedBox(height: 10),
                                       Row(children: [
                                         Text(
-                                        rproduct[index]["NameE"].toString(),
+                                          rproduct![index]["NameE"].toString(),
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         SizedBox(width: 10),
                                         Text(
-                                          rproduct[index]["NameH"].toString(),
+                                          rproduct![index]["NameH"].toString(),
                                           style:
                                               TextStyle(color: Colors.black45),
                                         )
@@ -193,7 +170,7 @@ var cartitem;
                                       Row(children: [
                                         Text("M.R.P :  ₹"),
                                         Text(
-                                         rproduct[index]["Rate"].toString(),
+                                          rproduct![index]["Rate"].toString(),
                                           style:
                                               TextStyle(color: Colors.black45),
                                         )
@@ -202,15 +179,13 @@ var cartitem;
                                       Container(
                                           margin: EdgeInsets.only(right: 100),
                                           child: Text(
-                                            rproduct[index]["Weight"]
+                                            rproduct![index]["Weight"]
                                                 .toString(),
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold),
                                           )),
                                       SizedBox(height: 10),
-                                     
-         
                                     ],
                                   )
                                 ],
@@ -220,12 +195,10 @@ var cartitem;
                         ),
                       ),
                     ));
-                  })
-                  ),
+                  })),
     );
   }
 }
-
 
 //dropdown....
 
@@ -252,8 +225,8 @@ class _dropdownState extends State<dropdown> {
     ListItem(3, "1 kg"),
   ];
 
-  List<DropdownMenuItem<ListItem>> _dropdownMenuItems;
-  ListItem _selectedItem;
+  List<DropdownMenuItem<ListItem>>? _dropdownMenuItems;
+  ListItem? _selectedItem;
 
   void initState() {
     print("varinats in initstate");
@@ -263,8 +236,8 @@ class _dropdownState extends State<dropdown> {
   }
 
   List<DropdownMenuItem<ListItem>> buildDropDownMenuItems(List listItems) {
-    List<DropdownMenuItem<ListItem>> items = List();
-    for (ListItem listItem in listItems) {
+    List<DropdownMenuItem<ListItem>> items = [];
+    for (ListItem listItem in listItems as Iterable<ListItem>) {
       items.add(
         DropdownMenuItem(
           child: Text(listItem.name),

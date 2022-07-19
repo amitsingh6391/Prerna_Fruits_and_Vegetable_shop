@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:http/http.dart" as http;
 import 'dart:convert';
@@ -8,8 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import "package:e_commerce/cart.dart";
 
 class Products extends StatefulWidget {
-  var category_id;
-  Products({@required this.category_id});
+  final category_id;
+  Products({required this.category_id});
 
   @override
   _ProductsState createState() => _ProductsState();
@@ -18,8 +17,8 @@ class Products extends StatefulWidget {
 class _ProductsState extends State<Products> {
   var id;
 
-var cartitem;
-  List products = [];
+  var cartitem;
+  List? products = [];
 
   fetchproduct() async {
     setState(() {
@@ -29,14 +28,14 @@ var cartitem;
     String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/GetProd?CatID=$id";
     print("apiUrl***********88");
     print(apiUrl);
-    http.Response response = await http.get(apiUrl);
+    http.Response response = await http.get(Uri.parse(apiUrl));
 
     products = json.decode(response.body);
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
     setState(() {
       products = json.decode(response.body);
-       cartitem = preferences.getInt("cartitem");
+      cartitem = preferences.getInt("cartitem");
     });
     print(response.statusCode);
     print("hii");
@@ -47,7 +46,7 @@ var cartitem;
       print(response.statusCode);
 
       print(products);
-      print(products.length);
+      print(products!.length);
 
       //print(pendingitem[0]["transaction_uid"]);
     } else {
@@ -63,9 +62,6 @@ var cartitem;
 
   var qty;
   int _indx = 0;
-
-
-   
 
   @override
   void initState() {
@@ -100,33 +96,28 @@ var cartitem;
 
             SizedBox(width: 60),
             Stack(
-                        children: [
-                         GestureDetector(
-                            onTap:(){
-
-                            Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => cart(
-                              )));
-
-                            },
-                            child:Icon(Icons.shopping_cart)),
-                          CircleAvatar(
-                              radius: 7,
-                              backgroundColor: Colors.red,
-                              child: Text(cartitem.toString(),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10)))
-                        ],
-                      )
+              children: [
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => cart()));
+                    },
+                    child: Icon(Icons.shopping_cart)),
+                CircleAvatar(
+                    radius: 7,
+                    backgroundColor: Colors.red,
+                    child: Text(cartitem.toString(),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10)))
+              ],
+            )
           ],
         ),
       ),
       body: Container(
-          child: products.length < 1
+          child: products!.length < 1
               ? Container(
                   child: Center(
                       child: Center(
@@ -136,15 +127,13 @@ var cartitem;
               : ListView.builder(
                   shrinkWrap: true,
                   physics: ScrollPhysics(),
-                  itemCount: products.length,
+                  itemCount: products!.length,
                   itemBuilder: (BuildContext context, int index) {
                     print("variants");
 
                     //print(variants);
 
-                    var qty = products[index]["Qty"];
-
-
+                    var qty = products![index]["Qty"];
 
                     return Card(
                         child: GestureDetector(
@@ -153,17 +142,17 @@ var cartitem;
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Productdetail(
-                                    product_id: products[index]["ID"],
-                                    productimg: products[index]["Img"],
-                                    hindiname: products[index]["NameH"],
-                                    englishname: products[index]["NameE"],
-                                    price: products[index]["Rate"],
-                                    weight: products[index]["Weight"],
-                                    variant: products[index]["Variants"])));
+                                    product_id: products![index]["ID"],
+                                    productimg: products![index]["Img"],
+                                    hindiname: products![index]["NameH"],
+                                    englishname: products![index]["NameE"],
+                                    price: products![index]["Rate"],
+                                    weight: products![index]["Weight"],
+                                    variant: products![index]["Variants"])));
                       },
                       child: Card(
                         child: Container(
-                          height: size.height * 0.17,
+                          height: size.height * 0.21,
                           color: Colors.white,
                           child: Column(
                             children: [
@@ -182,7 +171,7 @@ var cartitem;
                                             ),
                                             child: Image(
                                                 image: NetworkImage(
-                                                    products[index]["Img"]),
+                                                    products![index]["Img"]),
                                                 fit: BoxFit.fill)),
                                       ],
                                     ),
@@ -195,14 +184,14 @@ var cartitem;
                                       SizedBox(height: 10),
                                       Row(children: [
                                         Text(
-                                          products[index]["NameE"].toString(),
+                                          products![index]["NameE"].toString(),
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         SizedBox(width: 10),
                                         Text(
-                                          products[index]["NameH"].toString(),
+                                          products![index]["NameH"].toString(),
                                           style:
                                               TextStyle(color: Colors.black45),
                                         )
@@ -211,7 +200,7 @@ var cartitem;
                                       Row(children: [
                                         Text("M.R.P :  ₹"),
                                         Text(
-                                          products[index]["Rate"].toString(),
+                                          products![index]["Rate"].toString(),
                                           style:
                                               TextStyle(color: Colors.black45),
                                         )
@@ -220,20 +209,16 @@ var cartitem;
                                       Container(
                                           margin: EdgeInsets.only(right: 100),
                                           child: Text(
-                                            products[index]["Weight"]
+                                            products![index]["Weight"]
                                                 .toString(),
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold),
                                           )),
                                       SizedBox(height: 10),
-                                     
                                       Row(
-        children: <Widget>[
-           
-                    
-        ],
-      ),
+                                        children: <Widget>[],
+                                      ),
                                     ],
                                   )
                                 ],
@@ -243,12 +228,10 @@ var cartitem;
                         ),
                       ),
                     ));
-                  })
-                  ),
+                  })),
     );
   }
 }
-
 
 //dropdown....
 
@@ -275,8 +258,8 @@ class _dropdownState extends State<dropdown> {
     ListItem(3, "1 kg"),
   ];
 
-  List<DropdownMenuItem<ListItem>> _dropdownMenuItems;
-  ListItem _selectedItem;
+  List<DropdownMenuItem<ListItem>>? _dropdownMenuItems;
+  ListItem? _selectedItem;
 
   void initState() {
     print("varinats in initstate");
@@ -286,8 +269,8 @@ class _dropdownState extends State<dropdown> {
   }
 
   List<DropdownMenuItem<ListItem>> buildDropDownMenuItems(List listItems) {
-    List<DropdownMenuItem<ListItem>> items = List();
-    for (ListItem listItem in listItems) {
+    List<DropdownMenuItem<ListItem>> items = [];
+    for (ListItem listItem in listItems as Iterable<ListItem>) {
       items.add(
         DropdownMenuItem(
           child: Text(listItem.name),

@@ -1,14 +1,10 @@
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce/cart.dart';
 import 'package:e_commerce/drawer/drawer.dart';
 import 'package:e_commerce/subgategories.dart';
 import "package:e_commerce/productdetail.dart";
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
-import "package:e_commerce/cart.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 import "package:e_commerce/pages/screens/recommendedproduct.dart";
 
@@ -19,9 +15,7 @@ import 'dart:convert';
 
 import "package:e_commerce/pages/screens/product.dart";
 
-
-
-List category = [
+List? category = [
   {
     "Child": "wait",
     "ID": 1,
@@ -31,16 +25,15 @@ List category = [
   },
 ];
 
-List recommend_items=[
-   {
+List? recommend_items = [
+  {
     "Child": "wait",
     "ID": 1,
     "IsChild": false,
     "Name": "Fruits",
     "Img": "http://pfv.wonsoft.co.in/images/cat/fruits.png"
   },
-]; 
-
+];
 
 final bannerimg = "https://homepages.cae.wisc.edu/~ece533/images/mountain.png";
 final bannerimg2 =
@@ -79,8 +72,8 @@ class _main4State extends State<main4> {
     preferences.setString('email', "logedin");
     preferences.setString('email', "logedin");
 
-    http.Response response =
-        await http.get("http://pfv.wonsoft.co.in/API/Post.asmx/GetCat");
+    http.Response response = await http
+        .get(Uri.parse("http://pfv.wonsoft.co.in/API/Post.asmx/GetCat"));
 
     category = json.decode(response.body);
 
@@ -97,7 +90,7 @@ class _main4State extends State<main4> {
       print(response.statusCode);
 
       print(category);
-      print(category.length);
+      print(category!.length);
 
       //print(pendingitem[0]["transaction_uid"]);
     } else {
@@ -106,19 +99,14 @@ class _main4State extends State<main4> {
     }
   }
 
-
-
-   Future recommendeditem() async {
-   
-
-    http.Response response =
-        await http.get("http://pfv.wonsoft.co.in/API/Post.asmx/GetFeatureProd");
+  Future recommendeditem() async {
+    http.Response response = await http.get(
+        Uri.parse("http://pfv.wonsoft.co.in/API/Post.asmx/GetFeatureProd"));
 
     recommend_items = json.decode(response.body);
 
     setState(() {
       recommend_items = json.decode(response.body);
-      
     });
     print(response.statusCode);
     print("hii");
@@ -129,7 +117,6 @@ class _main4State extends State<main4> {
       print(response.statusCode);
 
       print(recommend_items);
-   
 
       //print(pendingitem[0]["transaction_uid"]);
     } else {
@@ -137,7 +124,6 @@ class _main4State extends State<main4> {
       print("345");
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -162,24 +148,24 @@ class _main4State extends State<main4> {
                       Stack(
                         children: [
                           GestureDetector(
-                            onTap:(){
-
-                            Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => cart(
-                              )));
-
-                            },
-                            child:Icon(Icons.shopping_cart)),
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => cart()));
+                              },
+                              child: Icon(Icons.shopping_cart)),
                           CircleAvatar(
-                              radius: 7,
-                              backgroundColor: Colors.red,
-                              child: Text(cartitem.toString(),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10)))
+                            radius: 7,
+                            backgroundColor: Colors.red,
+                            child: Text(
+                              cartitem.toString(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10),
+                            ),
+                          )
                         ],
                       )
                     ],
@@ -247,7 +233,7 @@ class _BodyState extends State<Body> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          card(),
+          // card(),
           Container(
             alignment: Alignment.center,
             margin: EdgeInsets.only(top: 10, bottom: 5),
@@ -257,7 +243,7 @@ class _BodyState extends State<Body> {
             ),
           ),
           card2(),
-         // card4(),
+          // card4(),
           listcard()
         ],
       ),
@@ -279,24 +265,23 @@ class _cardState extends State<card> {
 
   int _currentIndex = 0;
 
-  List<T> map<T>(List list, Function handler) {
-    List<T> result = [];
+  List<T?> map<T>(List list, Function handler) {
+    List<T?> result = [];
     for (var i = 0; i < list.length; i++) {
       result.add(handler(i, list[i]));
     }
     return result;
   }
 
-  List banners = [
+  List? banners = [
     "http://pfv.wonsoft.co.in/images/banner/0.jpg",
-    
   ];
 
 //here we fetch all he banners this is first part of our body...
 
   Future fetcbanners() async {
-    http.Response response =
-        await http.get("http://pfv.wonsoft.co.in/API/Post.asmx/GetBanner");
+    http.Response response = await http
+        .get(Uri.parse("http://pfv.wonsoft.co.in/API/Post.asmx/GetBanner"));
     banners = json.decode(response.body);
     print(response.statusCode);
     print("hii");
@@ -322,7 +307,7 @@ class _cardState extends State<card> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: <Widget>[
+      children: [
         Container(
           margin: EdgeInsets.only(
             top: 10,
@@ -348,7 +333,7 @@ class _cardState extends State<card> {
                   });
                 },
               ),
-              items: banners
+              items: banners!
                   .map((item) => Container(
                         decoration: BoxDecoration(
                             border: Border.all(width: 1, color: Colors.white),
@@ -371,7 +356,7 @@ class _cardState extends State<card> {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: map<Widget>(banners, (index, url) {
+          children: map<Widget>(banners!, (index, url) {
             return Container(
               width: 6.0,
               height: 6.0,
@@ -381,7 +366,7 @@ class _cardState extends State<card> {
                 color: _currentIndex == index ? x : Colors.grey,
               ),
             );
-          }),
+          }) as List<Widget>,
         ),
       ],
     );
@@ -405,7 +390,7 @@ class _card2State extends State<card2> {
   Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
     return Container(
-      child: category.length < 1
+      child: category!.length < 1
           ? Center(
               child: Column(children: [
               SizedBox(
@@ -418,12 +403,12 @@ class _card2State extends State<card2> {
           : GridView.builder(
               shrinkWrap: true,
               physics: ScrollPhysics(),
-              itemCount: category.length,
+              itemCount: category!.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount:
                       (orientation == Orientation.portrait) ? 2 : 3),
               itemBuilder: (BuildContext context, int index) {
-                var c = category[index]["Child"];
+                var c = category![index]["Child"];
                 print(c);
                 return Card(
                     child: GestureDetector(
@@ -433,7 +418,7 @@ class _card2State extends State<card2> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => Products(
-                                  category_id: category[index]["ID"])));
+                                  category_id: category![index]["ID"])));
                     } else {
                       print(c);
                       Navigator.push(
@@ -453,20 +438,20 @@ class _card2State extends State<card2> {
                             width: 64,
                             child: Image(
                                 image: NetworkImage(
-                                  category[index]["Img"],
+                                  category![index]["Img"],
                                 ),
                                 fit: BoxFit.fill)),
                         Container(
                             margin: EdgeInsets.only(top: 10),
                             alignment: Alignment.center,
                             child: Text(
-                              category[index]["Name"],
+                              category![index]["Name"],
                               style: TextStyle(color: Colors.black),
                             )),
                         Container(
                             alignment: Alignment.center,
                             child: Text(
-                              category[index]["NameH"],
+                              category![index]["NameH"],
                               style: TextStyle(color: Colors.black),
                             ))
                       ],
@@ -536,44 +521,44 @@ class _card4State extends State<card4> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 330,
-                      child: Container(
-                        height: 200,
-                        child: StaggeredGridView.countBuilder(
-                          physics: NeverScrollableScrollPhysics(),
-                          crossAxisCount: 4,
-                          itemCount: 3,
-                          itemBuilder: (BuildContext context, int index) =>
-                              Card(
-                            elevation: 10.0,
-                            child: Container(
-                                alignment: Alignment.center,
-                                child: new Container(
-                                  margin: EdgeInsets.only(
-                                      left: 20, right: 20, bottom: 20),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      //Image(image: NetworkImage(cardimg[index])),
-                                      new Text(
-                                        cardtxt[index],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12),
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                          ),
-                          staggeredTileBuilder: (int index) =>
-                              new StaggeredTile.count(2, index.isOdd ? 4 : 2),
-                          mainAxisSpacing: 12.0,
-                          crossAxisSpacing: 5.0,
-                        ),
-                      ),
-                    ),
+                    // Container(
+                    //   width: 330,
+                    //   child: Container(
+                    //     height: 200,
+                    //     child: StaggeredGridView.countBuilder(
+                    //       physics: NeverScrollableScrollPhysics(),
+                    //       crossAxisCount: 4,
+                    //       itemCount: 3,
+                    //       itemBuilder: (BuildContext context, int index) =>
+                    //           Card(
+                    //         elevation: 10.0,
+                    //         child: Container(
+                    //             alignment: Alignment.center,
+                    //             child: new Container(
+                    //               margin: EdgeInsets.only(
+                    //                   left: 20, right: 20, bottom: 20),
+                    //               child: Column(
+                    //                 mainAxisAlignment:
+                    //                     MainAxisAlignment.spaceEvenly,
+                    //                 children: [
+                    //                   //Image(image: NetworkImage(cardimg[index])),
+                    //                   new Text(
+                    //                     cardtxt[index],
+                    //                     style: TextStyle(
+                    //                         fontWeight: FontWeight.bold,
+                    //                         fontSize: 12),
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //             )),
+                    //       ),
+                    //       staggeredTileBuilder: (int index) =>
+                    //           new StaggeredTile.count(2, index.isOdd ? 4 : 2),
+                    //       mainAxisSpacing: 12.0,
+                    //       crossAxisSpacing: 5.0,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               )
@@ -591,9 +576,6 @@ class listcard extends StatefulWidget {
 }
 
 class _listcardState extends State<listcard> {
-
-
-
   //http://pfv.wonsoft.co.in/API/Post.asmx/GetFeatureProd
   @override
   Widget build(BuildContext context) {
@@ -611,8 +593,7 @@ class _listcardState extends State<listcard> {
                 children: [
                   Text(
                     "Most Selling Items",
-                    style: TextStyle(
-                         fontWeight: FontWeight.bold, fontSize: 18),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   ButtonTheme(
                     minWidth: 60,
@@ -622,7 +603,7 @@ class _listcardState extends State<listcard> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>Recommendedproduct()));
+                                builder: (context) => Recommendedproduct()));
                         //View All
                       },
                       shape: RoundedRectangleBorder(
@@ -639,42 +620,50 @@ class _listcardState extends State<listcard> {
                 ],
               ),
               SizedBox(
-                height: 150,
+                height: 155,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 4,
                   itemBuilder: (context, index) {
                     return GestureDetector(
-                      onTap:(){
-                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Productdetail(
-                                    product_id: recommend_items[index]["ID"],
-                                    productimg: recommend_items[index]["Img"],
-                                    hindiname:recommend_items[index]["NameH"],
-                                    englishname:recommend_items[index]["NameE"],
-                                    price: recommend_items[index]["Rate"],
-                                    weight:recommend_items[index]["Weight"],
-                                    variant:recommend_items[index]["Variants"])));
-                      },child:Card(
-                        child: Container(
-                            margin: EdgeInsets.only(
-                                left: 20, right: 20, bottom: 10),
-                            width: 100,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                               Image(image: NetworkImage(recommend_items[index]["Img"])),
-                               Row(
-                                 children:[
-                                    Text(recommend_items[index]["NameE"],style:TextStyle(fontSize:12)),
-                                    SizedBox(width:4), Text(recommend_items[index]["NameH"],
-                                     style:TextStyle(fontSize:12))
-                                 ]
-                               )
-                              ],
-                    ))));
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Productdetail(
+                                      product_id: recommend_items![index]["ID"],
+                                      productimg: recommend_items![index]
+                                          ["Img"],
+                                      hindiname: recommend_items![index]
+                                          ["NameH"],
+                                      englishname: recommend_items![index]
+                                          ["NameE"],
+                                      price: recommend_items![index]["Rate"],
+                                      weight: recommend_items![index]["Weight"],
+                                      variant: recommend_items![index]
+                                          ["Variants"])));
+                        },
+                        child: Card(
+                            child: Container(
+                                margin: EdgeInsets.only(
+                                    left: 20, right: 20, bottom: 10),
+                                width: 100,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Image(
+                                        image: NetworkImage(
+                                            recommend_items![index]["Img"])),
+                                    Row(children: [
+                                      Text(recommend_items![index]["NameE"],
+                                          style: TextStyle(fontSize: 12)),
+                                      SizedBox(width: 4),
+                                      Text(recommend_items![index]["NameH"],
+                                          style: TextStyle(fontSize: 12))
+                                    ])
+                                  ],
+                                ))));
                   },
                 ),
               )

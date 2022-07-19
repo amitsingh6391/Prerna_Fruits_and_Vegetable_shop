@@ -20,14 +20,14 @@ class PendingOrders {
         this.rate,
     });
 
-    List<Variant> variants;
-    String id;
-    bool isVariants;
-    String nameE;
-    String nameH;
-    String img;
-    Weight weight;
-    int rate;
+    List<Variant>? variants;
+    String? id;
+    bool? isVariants;
+    String? nameE;
+    String? nameH;
+    String? img;
+    Weight? weight;
+    int? rate;
 
     factory PendingOrders.fromJson(Map<String, dynamic> json) => PendingOrders(
         variants: List<Variant>.from(json["Variants"].map((x) => Variant.fromJson(x))),
@@ -41,13 +41,13 @@ class PendingOrders {
     );
 
     Map<String, dynamic> toJson() => {
-        "Variants": List<dynamic>.from(variants.map((x) => x.toJson())),
+        "Variants": List<dynamic>.from(variants!.map((x) => x.toJson())),
         "ID": id,
         "IsVariants": isVariants,
         "NameE": nameE,
         "NameH": nameH,
         "Img": img,
-        "Weight": weightValues.reverse[weight],
+        "Weight": weightValues.reverse![weight!],
         "Rate": rate,
     };
 }
@@ -58,8 +58,8 @@ class Variant {
         this.rate,
     });
 
-    Weight weight;
-    int rate;
+    Weight? weight;
+    int? rate;
 
     factory Variant.fromJson(Map<String, dynamic> json) => Variant(
         weight: weightValues.map[json["Weight"]],
@@ -67,7 +67,7 @@ class Variant {
     );
 
     Map<String, dynamic> toJson() => {
-        "Weight": weightValues.reverse[weight],
+        "Weight": weightValues.reverse![weight!],
         "Rate": rate,
     };
 }
@@ -82,11 +82,11 @@ final weightValues = EnumValues({
 
 class EnumValues<T> {
     Map<String, T> map;
-    Map<T, String> reverseMap;
+    Map<T, String>? reverseMap;
 
     EnumValues(this.map);
 
-    Map<T, String> get reverse {
+    Map<T, String>? get reverse {
         if (reverseMap == null) {
             reverseMap = map.map((k, v) => new MapEntry(v, k));
         }

@@ -15,7 +15,7 @@ import "package:e_commerce/pages/screens/product.dart";
 
 class subcategories extends StatefulWidget {
    var Object;
-  subcategories({Key key, @required this.Object}) : super(key: key);
+  subcategories({Key? key, required this.Object}) : super(key: key);
   @override
   _subcategoriesState createState() => _subcategoriesState();
 }
