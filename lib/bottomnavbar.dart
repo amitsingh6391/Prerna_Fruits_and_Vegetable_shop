@@ -1,14 +1,9 @@
 import 'dart:io';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce/cart.dart';
 import 'package:e_commerce/categories.dart';
 import 'package:e_commerce/favourite.dart';
-import "package:e_commerce/drawer/profile.dart";
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:e_commerce/color.dart';
 
 import 'homepage.dart';
@@ -53,7 +48,7 @@ class _main2State extends State<main2> {
                     )
                   ],
                 );
-              });
+              }).then((value) => value as bool);
         },
         child: main3(),
       ),
@@ -67,7 +62,7 @@ class main3 extends StatefulWidget {
 }
 
 class _main3State extends State<main3> with SingleTickerProviderStateMixin {
-  TabController tabController;
+  TabController? tabController;
 
   String title = "";
   @override
@@ -79,7 +74,7 @@ class _main3State extends State<main3> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     super.dispose();
-    tabController.dispose();
+    tabController!.dispose();
   }
 
   @override

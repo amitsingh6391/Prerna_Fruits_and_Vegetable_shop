@@ -47,12 +47,12 @@ class _favouriteState extends State<favourite> {
   fetchlikeddata();
 
   }
-List<String> likeid;
-List<String> listimg;
-List<String> listhindiname;
-List<String> listenglishname;
-List<String> listweight;
-List<String> listprice;
+List<String>? likeid;
+List<String>? listimg;
+List<String>? listhindiname;
+List<String>? listenglishname;
+List<String>? listweight;
+List<String>? listprice;
 
 int _indx =0;
 var cartitem;
@@ -157,12 +157,12 @@ var cartitem;
             backgroundColor:x,
           ),
         ),
-            body:likeid.length<1?Center(
+            body:likeid!.length<1?Center(
       child: Text("NO Favourite found",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w300),),
         ):ListView.builder(
            shrinkWrap : true,
         physics: ScrollPhysics(),
-        itemCount:listimg.length,
+        itemCount:listimg!.length,
         itemBuilder:(BuildContext context, int index){
 
          
@@ -178,13 +178,13 @@ var cartitem;
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Productdetail(
-                                    product_id: likeid[index],
-                                    productimg: listimg[index],
-                                    hindiname: listhindiname[index],
-                                    englishname:listenglishname[index],
-                                    price: listprice[index],
-                                    weight: listweight[index],
-                                    variant: listprice[index])));
+                                    product_id: likeid![index],
+                                    productimg: listimg![index],
+                                    hindiname: listhindiname![index],
+                                    englishname:listenglishname![index],
+                                    price: listprice![index],
+                                    weight: listweight![index],
+                                    variant: listprice![index])));
    
                
               },
@@ -204,7 +204,7 @@ var cartitem;
                             children: [
                               Container(height: 100,width: 100,margin: EdgeInsets.only(left: 20),
                                   child: Image(
-                                      image: NetworkImage(listimg[index]),fit: BoxFit.fill)
+                                      image: NetworkImage(listimg![index]),fit: BoxFit.fill)
                               ),
                             ],
                           ),),
@@ -215,10 +215,10 @@ var cartitem;
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(children:[
-                                 Text(listenglishname[index].toString(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+                                 Text(listenglishname![index].toString(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(width:10),
-                                  Text(listhindiname[index].toString(),style: TextStyle(color: Colors.black45),
+                                  Text(listhindiname![index].toString(),style: TextStyle(color: Colors.black45),
                                   ),
 
                                   SizedBox(width:20),
@@ -238,7 +238,7 @@ var cartitem;
                               Row(
                                 children:[
                                   Text("M.R.P : "),
-                                  Text(listprice[index].toString(),style: TextStyle(color: Colors.black45),
+                                  Text(listprice![index].toString(),style: TextStyle(color: Colors.black45),
                                   ),
                                  
                                  
@@ -248,21 +248,21 @@ var cartitem;
                                   Row(children:[
 
                                      Container(margin: EdgeInsets.only(bottom: 30,right: 100),
-                                  child: Text(listweight[index].toString(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)),
+                                  child: Text(listweight![index].toString(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)),
 
                                       IconButton(
                                     icon:Icon(Icons.delete,color:x),
                                     onPressed:() async{
 
 
-                                        likeid.remove(likeid[index].toString());
+                                        likeid!.remove(likeid![index].toString());
 
                             
-      listimg.remove(listimg[index].toString());
-      listhindiname.remove(listhindiname[index].toString());
-      listenglishname.remove(listenglishname[index].toString());
-      listweight.remove(listweight[index].toString());
-      listprice.remove(listprice[index].toString());
+      listimg!.remove(listimg![index].toString());
+      listhindiname!.remove(listhindiname![index].toString());
+      listenglishname!.remove(listenglishname![index].toString());
+      listweight!.remove(listweight![index].toString());
+      listprice!.remove(listprice![index].toString());
 
       
       
@@ -277,12 +277,12 @@ var cartitem;
                             
 
                              SharedPreferences preferences = await SharedPreferences.getInstance();
-                             preferences.setStringList('likeid',likeid);
-                             preferences.setStringList('listimg',listimg);
-                             preferences.setStringList('listhindiname',listhindiname);
-                             preferences.setStringList('listenglishname',listenglishname);
-                             preferences.setStringList('listweight',listweight);
-                             preferences.setStringList('listprice',listprice);
+                             preferences.setStringList('likeid',likeid!);
+                             preferences.setStringList('listimg',listimg!);
+                             preferences.setStringList('listhindiname',listhindiname!);
+                             preferences.setStringList('listenglishname',listenglishname!);
+                             preferences.setStringList('listweight',listweight!);
+                             preferences.setStringList('listprice',listprice!);
 
 
                              Navigator.push(context,MaterialPageRoute(builder:(context)=>favourite()));

@@ -1,7 +1,5 @@
 import 'package:e_commerce/bottomnavbar.dart';
-import 'package:e_commerce/signin/forgotpass.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:e_commerce/color.dart';
 import 'package:geolocator/geolocator.dart';
 import "package:http/http.dart" as http;
@@ -9,19 +7,16 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
-
 class UpdateProfile extends StatefulWidget {
   var id;
-  UpdateProfile({@required this.id});
+  UpdateProfile({required this.id});
 
   @override
   _UpdateProfileState createState() => _UpdateProfileState();
 }
 
 class _UpdateProfileState extends State<UpdateProfile> {
-  Position _currentPosition;
+  late Position _currentPosition;
   bool check = false;
   TextEditingController emailEditingController = new TextEditingController();
   TextEditingController passwordEditingController = new TextEditingController();
@@ -33,15 +28,13 @@ class _UpdateProfileState extends State<UpdateProfile> {
   TextEditingController codeEditingController = new TextEditingController();
   final userauth = GlobalKey<FormState>();
 
-  
-
   var lat, long;
   bool loading = false;
 
-  var name, email, mobile, address, city, area, pincode, gender,userid;
+  var name, email, mobile, address, city, area, pincode, gender, userid;
 
   UpdateProfile() async {
-    if (userauth.currentState.validate()) {
+    if (userauth.currentState!.validate()) {
       setState(() {
         userid = widget.id;
         loading = true;
@@ -49,7 +42,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
       print("*************userid");
       print(userid);
-     
+
       profileupdate();
     } else {
       print("something wrong");
@@ -57,23 +50,23 @@ class _UpdateProfileState extends State<UpdateProfile> {
   }
 
 //User details should be update here ..
-  List
+  List?
       data; //data is list which we should recive in response of update api function/...
   // bool loading = false;
-  int selectedRadioTile, selectedRadio;
+  int? selectedRadioTile, selectedRadio;
 
   profileupdate() async {
     setState(() {
       name = nameEditingController.text;
       email = emailEditingController.text;
       address = addressEditingController.text;
-      pincode =pincodeEditingController.text;
+      pincode = pincodeEditingController.text;
     });
     String apiUrl =
         "http://pfv.wonsoft.co.in/API/Post.asmx/Update?ID=$userid&Name=$name&Gender=$gender&Email=$email&Mobile=$mobile&City=$city&Area=$area&Pincode=$pincode&Address=$address&Latitude=$lat&Longitude=$long";
     print(apiUrl);
 
-    final response = await http.get(apiUrl);
+    final response = await http.get(Uri.parse(apiUrl));
 
     print(response.statusCode);
 
@@ -91,17 +84,17 @@ class _UpdateProfileState extends State<UpdateProfile> {
       });
 
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      
-     
-      preferences.setString('name',nameEditingController.text);
-      preferences.setString('mail',emailEditingController.text);
-      preferences.setString('pincode',pincodeEditingController.text);
-      preferences.setString('address',addressEditingController.text);
-       preferences.setString('gender',gender);
-      preferences.setString('city',city);
-      preferences.setString('area',area);
 
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => main2()));
+      preferences.setString('name', nameEditingController.text);
+      preferences.setString('mail', emailEditingController.text);
+      preferences.setString('pincode', pincodeEditingController.text);
+      preferences.setString('address', addressEditingController.text);
+      preferences.setString('gender', gender);
+      preferences.setString('city', city);
+      preferences.setString('area', area);
+
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => main2()));
     } else {
       print("Not hirt");
       print("345");
@@ -109,10 +102,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
   }
 
   _getCurrentLocation() {
-    final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+    final Geolocator geolocator = Geolocator();
 
-    geolocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+    Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
         .then((Position position) {
       setState(() {
         _currentPosition = position;
@@ -124,24 +116,21 @@ class _UpdateProfileState extends State<UpdateProfile> {
     });
   }
 
-
 //getcity and area list...
 
-List list_of_city=["jodphur"];
-List selectarea =["12th Road Circle","5 Bati Circle"];
+  List? list_of_city = ["jodphur"];
+  List? selectarea = ["12th Road Circle", "5 Bati Circle"];
 
-getcity() async {
-    
-    String apiUrl =
-        "http://pfv.wonsoft.co.in/API/Post.asmx/City";
+  getcity() async {
+    String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/City";
     print(apiUrl);
 
-    final response = await http.get(apiUrl);
+    final response = await http.get(Uri.parse(apiUrl));
 
     print(response.statusCode);
 
-   list_of_city = json.decode(response.body);
-   print("*****city*******");
+    list_of_city = json.decode(response.body);
+    print("*****city*******");
     print(list_of_city);
 
     print(response.body);
@@ -151,36 +140,26 @@ getcity() async {
 
       setState(() {
         loading = false;
-        list_of_city=list_of_city;
-
+        list_of_city = list_of_city;
       });
-
-     
-
-    
     } else {
       print("Not hirt");
       print("345");
     }
   }
 
-
-
 //get aea
 
-getarea() async {
-    
-    String apiUrl =
-        "http://pfv.wonsoft.co.in/API/Post.asmx/Area?City=$city";
+  getarea() async {
+    String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/Area?City=$city";
     print(apiUrl);
 
-    final response = await http.get(apiUrl);
+    final response = await http.get(Uri.parse(apiUrl));
 
     print(response.statusCode);
 
-   selectarea = json.decode(response.body);
-   print("*****city*******");
-   
+    selectarea = json.decode(response.body);
+    print("*****city*******");
 
     print(response.body);
     if (response.statusCode == 200) {
@@ -189,25 +168,13 @@ getarea() async {
 
       setState(() {
         loading = false;
-        selectarea=selectarea;
-
+        selectarea = selectarea;
       });
-
-     
-
-    
     } else {
       print("Not hirt");
       print("345");
     }
   }
-
-
-
-
-
-
-
 
   //fine user mobile number ......
 
@@ -223,19 +190,17 @@ getarea() async {
 
   void initState() {
     super.initState();
-print("**************id*************");
+    print("**************id*************");
     print(widget.id);
 
     _getCurrentLocation();
-   getcity();
+    getcity();
     getdata();
     selectedRadio = 0;
     selectedRadioTile = 0;
- 
-
   }
 
-  setSelectedRadioTile(int val) {
+  setSelectedRadioTile(int? val) {
     setState(() {
       selectedRadioTile = val;
     });
@@ -247,7 +212,6 @@ print("**************id*************");
     _getCurrentLocation();
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -255,11 +219,17 @@ print("**************id*************");
             child: Column(
       children: [
         Stack(children: [
-          Container(alignment: Alignment.topCenter,
-            height: 300,color:x,
-            child: Container(height: 180,alignment: Alignment.topCenter,margin: EdgeInsets.only(top: 30),
+          Container(
+            alignment: Alignment.topCenter,
+            height: 300,
+            color: x,
+            child: Container(
+              height: 180,
+              alignment: Alignment.topCenter,
+              margin: EdgeInsets.only(top: 30),
               child: Image(
-                image: AssetImage("assets/WhatsApp Image 2020-11-03 at 2.05.54 PM (1)_preview_rev_1.png"),
+                image: AssetImage(
+                    "assets/WhatsApp Image 2020-11-03 at 2.05.54 PM (1)_preview_rev_1.png"),
               ),
             ),
           ),
@@ -295,7 +265,7 @@ print("**************id*************");
                                   children: [
                                     new TextFormField(
                                       validator: (val) {
-                                        return val.length > 1
+                                        return val!.length > 1
                                             ? null
                                             : "Enter your name";
                                       },
@@ -309,7 +279,7 @@ print("**************id*************");
                                       validator: (val) {
                                         return RegExp(
                                                     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                                .hasMatch(val)
+                                                .hasMatch(val!)
                                             ? null
                                             : "Please Enter Correct Email";
                                       },
@@ -322,11 +292,9 @@ print("**************id*************");
                                     ),
 
                                     TextFormField(
-
                                       keyboardType: TextInputType.number,
-                                      
                                       validator: (val) {
-                                        return val.length== 6
+                                        return val!.length == 6
                                             ? null
                                             : "Please Correct Your Pincode";
                                       },
@@ -338,7 +306,7 @@ print("**************id*************");
                                     ),
                                     TextFormField(
                                       validator: (val) {
-                                        return val.length > 1
+                                        return val!.length > 1
                                             ? null
                                             : "Enter your address";
                                       },
@@ -349,124 +317,100 @@ print("**************id*************");
                                       ),
                                     ),
 
-
-
-
 //for gender...
 
+                                    SizedBox(height: 10),
+                                    Row(children: [
+                                      Expanded(
+                                          child: RadioListTile(
+                                        value: 1,
+                                        groupValue: selectedRadioTile,
+                                        title: Text("Male"),
+                                        onChanged: (dynamic val) {
+                                          print("yes");
+                                          setState(() {
+                                            gender = "Male";
+                                          });
+                                          print("male");
+                                          setSelectedRadioTile(val);
+                                        },
+                                        activeColor: Colors.blue,
+                                        selected: false,
+                                      )),
+                                      Expanded(
+                                          child: RadioListTile(
+                                        value: 2,
+                                        groupValue: selectedRadioTile,
+                                        title: Text("Female"),
+                                        onChanged: (dynamic val) {
+                                          setState(() {
+                                            gender = "Female";
+                                          });
+                                          print("female");
+                                          setSelectedRadioTile(val);
+                                        },
+                                        activeColor: Colors.blue,
+                                        selected: false,
+                                      )),
+                                    ]),
 
-
-                  SizedBox(height: 10),
-                Row(
-                  children:[
-                    Expanded(child:RadioListTile(
-                    value: 1,
-                    groupValue: selectedRadioTile,
-                    title: Text("Male"),
-                    onChanged: (val) {
-                      print("yes");
-                      setState(() {
-                        gender = "Male";
-                      });
-                       print("male");
-                      setSelectedRadioTile(val);
-                    },
-                    activeColor: Colors.blue,
-                    selected: false,
-                  )),
-                  Expanded(child:RadioListTile(
-                    value: 2,
-                    groupValue: selectedRadioTile,
-                    title: Text("Female"),
-                    onChanged: (val) {
-                      setState(() {
-                        gender = "Female";
-                      });
-                      print("female");
-                      setSelectedRadioTile(val);
-                    },
-                    activeColor: Colors.blue,
-                    selected: false,
-                  )),
-
-                  ]
-                ),
-                  
-
-
-Row(
-  children:[
-    Padding(
-                padding: const EdgeInsets.only(top:18.0),
-                child: DropdownButton(
-                  hint: Text(
-                      'Please Select Your City                        '), // Not necessary for Option 1
-                  value: city,
-                  onChanged: (newValue) {
-                    setState(() {
-                      city = newValue;
-                    });
-                    getarea();
-                  },
-                  items: list_of_city.map((location) {
-                    return DropdownMenuItem(
-                      child: new Text(location),
-                      value: location,
-                    );
-                  }).toList(),
-                ),
-              ),
-
-  ]
-),
-Row(
-  children:[
-    Padding(
-                padding: const EdgeInsets.only(top:18.0),
-                child: DropdownButton(
-                  hint: Text(
-                      'Please Select Your Area                        '), // Not necessary for Option 1
-                  value:area,
-                  onChanged: (newValue) {
-                    setState(() {
-                      area = newValue;
-                    });
-                  },
-                  items: selectarea.map((location) {
-                    return DropdownMenuItem(
-                      child: new Text(location),
-                      value: location,
-                    );
-                  }).toList(),
-                ),
-              ),
-
-  ]
-),
-                  
-
-               
-
-
-
-
-
-
-                                    
-                               
+                                    Row(children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 18.0),
+                                        child: DropdownButton(
+                                          hint: Text(
+                                              'Please Select Your City                        '), // Not necessary for Option 1
+                                          value: city,
+                                          onChanged: (dynamic newValue) {
+                                            setState(() {
+                                              city = newValue;
+                                            });
+                                            getarea();
+                                          },
+                                          items: list_of_city!.map((location) {
+                                            return DropdownMenuItem(
+                                              child: new Text(location),
+                                              value: location,
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                    ]),
+                                    Row(children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 18.0),
+                                        child: DropdownButton(
+                                          hint: Text(
+                                              'Please Select Your Area                        '), // Not necessary for Option 1
+                                          value: area,
+                                          onChanged: (dynamic newValue) {
+                                            setState(() {
+                                              area = newValue;
+                                            });
+                                          },
+                                          items: selectarea!.map((location) {
+                                            return DropdownMenuItem(
+                                              child: new Text(location),
+                                              value: location,
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                    ]),
                                   ],
                                 )),
                           ),
-                         
                           SizedBox(
                             height: 30,
                           ),
-                           loading
-                          ? Center(
-                              child: CircularProgressIndicator(
-                                  backgroundColor: Colors.green),
-                            )
-                          : Text(""),
+                          loading
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                      backgroundColor: Colors.green),
+                                )
+                              : Text(""),
                           ButtonTheme(
                               minWidth: 400.0,
                               height: 40.0,
@@ -476,17 +420,14 @@ Row(
                                         fontSize: 16, color: Colors.white)),
                                 color: x,
                                 onPressed: () {
-                                  if (userauth.currentState.validate()) {
-                                    
-                                      UpdateProfile();
-                                    
+                                  if (userauth.currentState!.validate()) {
+                                    UpdateProfile();
                                   }
                                 },
                               )),
                           SizedBox(
                             height: 30,
                           ),
-                         
                         ],
                       ),
                     ),

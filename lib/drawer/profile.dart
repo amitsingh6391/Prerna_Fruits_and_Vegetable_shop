@@ -12,7 +12,7 @@ import "package:e_commerce/signup/updateprofile.dart";
 class profile extends StatefulWidget {
 
   var id;
-  profile({@required this.id});
+  profile({required this.id});
 
   @override
   _profileState createState() => _profileState();

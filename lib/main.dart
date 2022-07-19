@@ -1,12 +1,11 @@
-
 import 'package:e_commerce/bottomnavbar.dart';
 import 'package:e_commerce/signin/sigin.dart';
 import "package:flutter/material.dart";
 import "dart:async";
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:e_commerce/bottomnavbar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "color.dart";
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -42,35 +41,27 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Timer(
-      Duration(seconds:3),
-          () async {
-
-
-
-SharedPreferences preferences = await SharedPreferences.getInstance();
+      Duration(seconds: 3),
+      () async {
+        SharedPreferences preferences = await SharedPreferences.getInstance();
 
         var email = preferences.getString('email');
 
-      if(email == "logedin"){
+        if (email == "logedin") {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => main2(),
+              ));
+        }
 
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>main2(),
-            ));
-
-      }
-
-       if(email != "logedin"){
-
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>sigin(),
-            ));
-
-      }
-       
+        if (email != "logedin") {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => sigin(),
+              ));
+        }
       },
     );
   }
@@ -78,19 +69,13 @@ SharedPreferences preferences = await SharedPreferences.getInstance();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:x,
-      body:
-    
-
-        
-                    Center(child:Text("            Prerna\nFRUITS & VEGETABLES",style: GoogleFonts.caveatBrush(color: Colors.white,fontSize:33),),
-                     ),
-                     
-
-                 
-                
-        
-      
+      backgroundColor: x,
+      body: Center(
+        child: Text(
+          "            Prerna\nFRUITS & VEGETABLES",
+          style: GoogleFonts.caveatBrush(color: Colors.white, fontSize: 33),
+        ),
+      ),
     );
   }
 }

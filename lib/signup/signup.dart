@@ -1,7 +1,5 @@
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:e_commerce/signin/otp.dart';
 import 'package:e_commerce/signup/Otp2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import "package:http/http.dart" as http;
@@ -20,7 +18,7 @@ class _signupState extends State<signup> {
   final userauth = GlobalKey<FormState>();
   TextEditingController numberEditingController = new TextEditingController();
   bool loading = false;
-  List data;
+  List? data;
 
   var number;
   otpverification() async {
@@ -35,7 +33,7 @@ class _signupState extends State<signup> {
         "http://pfv.wonsoft.co.in/API/Post.asmx/SignUp?Mobile=$number";
     print(apiUrl);
 
-    final response = await http.get(apiUrl);
+    final response = await http.get(Uri.parse(apiUrl));
 
     print(response.statusCode);
 
@@ -43,8 +41,8 @@ class _signupState extends State<signup> {
     print("******data*******");
     print(data);
 
-    var y = data[0]["Result"];
-    var otp = data[0]["OTP"];
+    var y = data![0]["Result"];
+    var otp = data![0]["OTP"];
     print(y);
 
     print(response.body);
@@ -84,11 +82,17 @@ class _signupState extends State<signup> {
             child: Column(
       children: [
         Stack(children: [
-          Container(alignment: Alignment.topCenter,
-            height: 300,color:x,
-            child: Container(height: 180,alignment: Alignment.topCenter,margin: EdgeInsets.only(top: 30),
+          Container(
+            alignment: Alignment.topCenter,
+            height: 300,
+            color: x,
+            child: Container(
+              height: 180,
+              alignment: Alignment.topCenter,
+              margin: EdgeInsets.only(top: 30),
               child: Image(
-                image: AssetImage("assets/WhatsApp Image 2020-11-03 at 2.05.54 PM (1)_preview_rev_1.png"),
+                image: AssetImage(
+                    "assets/WhatsApp Image 2020-11-03 at 2.05.54 PM (1)_preview_rev_1.png"),
               ),
             ),
           ),
@@ -130,7 +134,7 @@ class _signupState extends State<signup> {
                             key: userauth,
                             child: TextFormField(
                               validator: (val) {
-                                return val.length == 10
+                                return val!.length == 10
                                     ? null
                                     : "Please enter correct number";
                               },
@@ -178,7 +182,7 @@ class _signupState extends State<signup> {
                                       fontSize: 16, color: Colors.white)),
                               color: x,
                               onPressed: () {
-                                if (userauth.currentState.validate()) {
+                                if (userauth.currentState!.validate()) {
                                   otpverification();
                                 }
                               },

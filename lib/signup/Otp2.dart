@@ -1,18 +1,16 @@
-
 import "package:e_commerce/services/updatepassword.dart";
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 
 import 'package:e_commerce/color.dart';
 import "package:http/http.dart" as http;
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Otp2 extends StatefulWidget {
   var otp, mobilenumber;
-  Otp2({@required this.otp, @required this.mobilenumber});
+  Otp2({required this.otp, required this.mobilenumber});
   @override
   _Otp2State createState() => _Otp2State();
 }
@@ -42,7 +40,7 @@ class _Otp2State extends State<Otp2> {
         "http://pfv.wonsoft.co.in/API/Post.asmx/OTPVerify?Mobile=$number&OTP=$otpcode";
     print(apiUrl);
 
-    final response = await http.get(apiUrl);
+    final response = await http.get(Uri.parse(apiUrl));
 
     print(response.statusCode);
 
@@ -55,8 +53,8 @@ class _Otp2State extends State<Otp2> {
     print(y);
     print(id);
 
-     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString('Id',id);
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('Id', id);
 
     print(response.body);
     if (response.statusCode == 200 && y == "Success") {
@@ -67,8 +65,8 @@ class _Otp2State extends State<Otp2> {
         loading = false;
       });
 
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Setpassword(id: id)));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => Setpassword(id: id)));
     } else {
       setState(() {
         loading = false;
@@ -86,7 +84,7 @@ class _Otp2State extends State<Otp2> {
   }
 
   var enterotp;
-  BuildContext scaffoldContext;
+  late BuildContext scaffoldContext;
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: new Builder(builder: (BuildContext context) {
@@ -95,11 +93,17 @@ class _Otp2State extends State<Otp2> {
           child: Column(
         children: [
           Stack(children: [
-            Container(alignment: Alignment.topCenter,
-              height: 300,color:x,
-              child: Container(height: 180,alignment: Alignment.topCenter,margin: EdgeInsets.only(top: 30),
+            Container(
+              alignment: Alignment.topCenter,
+              height: 300,
+              color: x,
+              child: Container(
+                height: 180,
+                alignment: Alignment.topCenter,
+                margin: EdgeInsets.only(top: 30),
                 child: Image(
-                  image: AssetImage("assets/WhatsApp Image 2020-11-03 at 2.05.54 PM (1)_preview_rev_1.png"),
+                  image: AssetImage(
+                      "assets/WhatsApp Image 2020-11-03 at 2.05.54 PM (1)_preview_rev_1.png"),
                 ),
               ),
             ),
@@ -139,22 +143,20 @@ class _Otp2State extends State<Otp2> {
                         Container(
                           margin: EdgeInsets.only(bottom: 40),
                           color: Colors.transparent,
-                          child: PinEntryTextField(
+                          child: PinInputTextField(
                             onSubmit: (String pin) {
                               setState(() {
                                 enterotp = pin;
                               });
                             }, // end onSubmit
-                            isTextObscure: true,
                           ),
                         ),
-
-                         loading
-                          ? Center(
-                              child: CircularProgressIndicator(
-                                  backgroundColor: Colors.green),
-                            )
-                          : Text(""),
+                        loading
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                    backgroundColor: Colors.green),
+                              )
+                            : Text(""),
                         Container(
                           alignment: Alignment.center,
                           child: ButtonTheme(

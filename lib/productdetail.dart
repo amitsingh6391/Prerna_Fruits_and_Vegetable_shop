@@ -1,5 +1,4 @@
 import 'package:e_commerce/color.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,59 +6,58 @@ import "package:http/http.dart" as http;
 import 'dart:convert';
 import "package:e_commerce/cart.dart";
 
-
 class Productdetail extends StatefulWidget {
-
-var productimg,hindiname,englishname,price,weight;
-var variant,product_id;
-Productdetail({@required this.productimg,@required this.hindiname,@required this.englishname,
-@required this.price,@required this.weight,@required this.product_id,@required this.variant });
+  var productimg, hindiname, englishname, price, weight;
+  var variant, product_id;
+  Productdetail(
+      {required this.productimg,
+      required this.hindiname,
+      required this.englishname,
+      required this.price,
+      required this.weight,
+      required this.product_id,
+      required this.variant});
 
   @override
   _ProductdetailState createState() => _ProductdetailState();
 }
 
 class _ProductdetailState extends State<Productdetail> {
-  bool like =false,
-  share=false,similar=false;
-  
-  int _indx =0;
+  bool like = false, share = false, similar = false;
 
-  @override 
-  void initState(){
+  int _indx = 0;
 
-  super.initState();
-  fetchcartnumber();
-  fetchlikeditem();
-  print(widget.weight);
-
+  @override
+  void initState() {
+    super.initState();
+    fetchcartnumber();
+    fetchlikeditem();
+    print(widget.weight);
   }
 
-List<String> likeid;
-List<String> listimg;
-List<String> listhindiname;
-List<String> listenglishname;
-List<String> listweight;
-List<String> listprice;
-List result=[];
-var cartitem;
-var userid;
-var number;
-var pid,wt,rt;
- addproduct(var itemnumber) async {
+  List<String>? likeid;
+  List<String>? listimg;
+  List<String>? listhindiname;
+  List<String>? listenglishname;
+  List<String>? listweight;
+  List<String>? listprice;
+  List? result = [];
+  var cartitem;
+  var userid;
+  var number;
+  var pid, wt, rt;
+  addproduct(var itemnumber) async {
     setState(() {
-      
       wt = widget.weight;
       rt = widget.price;
       pid = widget.product_id;
-
     });
 
-
-String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/ItemAdd?UID=$userid&PID=$pid&Weight=$wt&MRP=$rt&Cnt=$itemnumber";
+    String apiUrl =
+        "http://pfv.wonsoft.co.in/API/Post.asmx/ItemAdd?UID=$userid&PID=$pid&Weight=$wt&MRP=$rt&Cnt=$itemnumber";
     print("apiUrl***********88");
     print(apiUrl);
-    http.Response response = await http.get(apiUrl);
+    http.Response response = await http.get(Uri.parse(apiUrl));
 
     result = json.decode(response.body);
 
@@ -70,60 +68,44 @@ String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/ItemAdd?UID=$userid&PID=
 
     print(result);
 
+    var newitemnumber = result![0]["ItemCount"];
+    print(newitemnumber);
 
-    var newitemnumber = result[0]["ItemCount"];
-  print(newitemnumber);
-
-
-    setState((){
+    setState(() {
       cartitem = newitemnumber;
     });
-
 
     if (response.statusCode == 200) {
       print(response.statusCode);
       fetchcartnumber();
-
-     
     } else {
-    result = [];
+      result = [];
       print("345");
     }
   }
 
-
-
-
-
 //getcart number   ........
 
-
-
-fetchcartnumber() async {
-    
-var userid;
-     SharedPreferences preferences = await SharedPreferences.getInstance();
-   setState((){
-     userid = preferences.getString("Id");
-   });
-print("userid");
-   print(userid);
+  fetchcartnumber() async {
+    var userid;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      userid = preferences.getString("Id");
+    });
+    print("userid");
+    print(userid);
 
     String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/Cart?UID=$userid";
-   
+
     print(apiUrl);
-    http.Response response = await http.get(apiUrl);
+    http.Response response = await http.get(Uri.parse(apiUrl));
 
-   var numberofproduct=json.decode(response.body);
-  
-
-    
+    var numberofproduct = json.decode(response.body);
 
     setState(() {
-      numberofproduct=json.decode(response.body);
-      preferences.setInt("cartitem",numberofproduct.last["TotQty"]);
-      number= preferences.getInt("cartitem");
-     
+      numberofproduct = json.decode(response.body);
+      preferences.setInt("cartitem", numberofproduct.last["TotQty"]);
+      number = preferences.getInt("cartitem");
     });
 
     // preferences.setInt("cartitem",numberofproduct.last["TotQty"]);
@@ -143,29 +125,25 @@ print("userid");
 
       //print(pendingitem[0]["transaction_uid"]);
     } else {
-      numberofproduct= [];
+      numberofproduct = [];
       print("345");
     }
   }
 
-
 //decrease item number...
 
- removeproduct(var itemnumber) async {
-   
+  removeproduct(var itemnumber) async {
     setState(() {
-      
       wt = widget.weight;
       rt = widget.price;
       pid = widget.product_id;
-
     });
 
-
-String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/ItemDel?UID=$userid&PID=$pid&Weight=$wt&MRP=$rt&Cnt=$itemnumber";
+    String apiUrl =
+        "http://pfv.wonsoft.co.in/API/Post.asmx/ItemDel?UID=$userid&PID=$pid&Weight=$wt&MRP=$rt&Cnt=$itemnumber";
     print("apiUrl***");
     print(apiUrl);
-    http.Response response = await http.get(apiUrl);
+    http.Response response = await http.get(Uri.parse(apiUrl));
 
     result = json.decode(response.body);
 
@@ -176,217 +154,214 @@ String apiUrl = "http://pfv.wonsoft.co.in/API/Post.asmx/ItemDel?UID=$userid&PID=
     print("hii");
     print(result);
 
-   // print(products);
-  var newitemnumber = result[0]["ItemCount"];
-  print(newitemnumber);
+    // print(products);
+    var newitemnumber = result![0]["ItemCount"];
+    print(newitemnumber);
 
-   
-
-     setState((){
+    setState(() {
       cartitem = newitemnumber;
     });
 
     if (response.statusCode == 200) {
       print(response.statusCode);
-fetchcartnumber();
-     
+      fetchcartnumber();
     } else {
-    result = [];
+      result = [];
       print("345");
     }
   }
 
+  fetchlikeditem() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    likeid = preferences.getStringList('likeid');
+    listimg = preferences.getStringList('listimg');
+    listhindiname = preferences.getStringList('listhindiname');
+    listenglishname = preferences.getStringList('listenglishname');
+    listweight = preferences.getStringList('listweight');
 
+    listprice = preferences.getStringList('listprice');
+    userid = preferences.getString("Id");
 
+    setState(() {
+      cartitem = preferences.getInt("cartitem");
 
-  fetchlikeditem() async{
+      if (likeid != null) {
+        print("okk not null");
+        print(likeid);
+        print(listimg);
 
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      likeid = preferences.getStringList('likeid');
-      listimg = preferences.getStringList('listimg');
-      listhindiname = preferences.getStringList('listhindiname');
-      listenglishname = preferences.getStringList('listenglishname');
-      listweight = preferences.getStringList('listweight');
-     
-      listprice = preferences.getStringList('listprice');
-      userid = preferences.getString("Id");
-     
-     
-      
-     
+        likeid = preferences.getStringList('likeid');
+        listimg = preferences.getStringList('listimg');
+        listhindiname = preferences.getStringList('listhindiname');
+        listenglishname = preferences.getStringList('listenglishname');
+        listweight = preferences.getStringList('listweight');
 
-      setState((){
+        listprice = preferences.getStringList('listprice');
+        userid = preferences.getString("Id");
+      }
 
-         cartitem = preferences.getInt("cartitem");
+      if (likeid == null) {
+        print("null here");
 
-     if(likeid != null){
+        likeid = [];
+        listimg = [];
+        listhindiname = [];
+        listenglishname = [];
+        listweight = [];
 
-       print("okk not null");
-       print(likeid);
-       print(listimg);
-
-      likeid = preferences.getStringList('likeid');
-      listimg = preferences.getStringList('listimg');
-      listhindiname = preferences.getStringList('listhindiname');
-      listenglishname = preferences.getStringList('listenglishname');
-      listweight = preferences.getStringList('listweight');
-      
-      listprice = preferences.getStringList('listprice');
-       userid = preferences.getString("Id");
-     
-
-     }
-     
-     if(likeid==null){
-
-       print("null here");
-
-     likeid = [];
-      listimg = [];
-      listhindiname =[];
-      listenglishname = [];
-      listweight = [];
-      
-      listprice = [];
-
-     }
-
-      });
-
-   
-
+        listprice = [];
+      }
+    });
   }
- 
-  Share(){
-    return GestureDetector(onTap: (){
-      setState(() {
-        share=!share;
-      });
-    },
+
+  Share() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          share = !share;
+        });
+      },
       child: Row(
         children: [
-          Icon(Icons.share,color: Colors.grey,),
-          Text("Share",style: TextStyle(color: Colors.black),)
+          Icon(
+            Icons.share,
+            color: Colors.grey,
+          ),
+          Text(
+            "Share",
+            style: TextStyle(color: Colors.black),
+          )
         ],
       ),
     );
   }
-  SimilarPrdct(){
-    return GestureDetector(onTap: (){
-      setState(() {
-        similar=!similar;
-      });
-    },
+
+  SimilarPrdct() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          similar = !similar;
+        });
+      },
       child: Row(
         children: [
-          Icon(Icons.art_track_sharp,color: Colors.grey,),
-          Text("Similar Productdetail",style: TextStyle(color: Colors.black),)
+          Icon(
+            Icons.art_track_sharp,
+            color: Colors.grey,
+          ),
+          Text(
+            "Similar Productdetail",
+            style: TextStyle(color: Colors.black),
+          )
         ],
       ),
     );
   }
-  final img ="https://png.pngtree.com/png-clipart/20200701/original/pngtree-red-vegetables-tomatoes-png-image_5428080.jpg";
+
+  final img =
+      "https://png.pngtree.com/png-clipart/20200701/original/pngtree-red-vegetables-tomatoes-png-image_5428080.jpg";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor:x,
-        title:  Container(
-          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      appBar: AppBar(
+        backgroundColor: x,
+        title: Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(" Prerna fruits and Vegetables",style: GoogleFonts.caveatBrush(color: Colors.white,fontSize:20),),
-
-
-              
-            Stack(
-                        children: [
-                          GestureDetector(
-                            onTap:(){
-
-                            Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => cart(
-                              )));
-
-                            },
-                            child:Icon(Icons.shopping_cart)),
-                          CircleAvatar(
-                              radius: 7,
-                              backgroundColor: Colors.red,
-                              child: Text(number.toString(),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10)))
-                        ],
-                      )
+              Text(
+                " Prerna fruits and Vegetables",
+                style:
+                    GoogleFonts.caveatBrush(color: Colors.white, fontSize: 20),
+              ),
+              Stack(
+                children: [
+                  GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => cart()));
+                      },
+                      child: Icon(Icons.shopping_cart)),
+                  CircleAvatar(
+                      radius: 7,
+                      backgroundColor: Colors.red,
+                      child: Text(number.toString(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10)))
+                ],
+              )
             ],
           ),
         ),
       ),
       body: Column(
         children: [
-          Container(margin: EdgeInsets.only(top: 20,),
+          Container(
+            margin: EdgeInsets.only(
+              top: 20,
+            ),
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   Container(
-                  alignment: Alignment.center,
+                    alignment: Alignment.center,
                     height: 200,
                     width: MediaQuery.of(context).size.width,
                     child: Center(
-                      child: SizedBox(height: 300,width: 250,
+                      child: SizedBox(
+                        height: 300,
+                        width: 250,
                         child: Image(
-                          image: NetworkImage(widget.productimg),fit: BoxFit.fill,
+                          image: NetworkImage(widget.productimg),
+                          fit: BoxFit.fill,
                         ),
                       ),
                     ),
                   ),
-                  Container(margin: EdgeInsets.only(top: 20,bottom: 20),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  Container(
+                    margin: EdgeInsets.only(top: 20, bottom: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-
                         GestureDetector(
-                          onTap:()async {
+                            onTap: () async {
+                              setState(() {
+                                like = true;
+                              });
+                              likeid!.add(widget.product_id.toString());
 
-setState((){
-  like=true;
-});
-                           likeid.add(widget.product_id.toString());
+                              listimg!.add(widget.productimg.toString());
+                              listhindiname!.add(widget.hindiname.toString());
+                              listenglishname!
+                                  .add(widget.englishname.toString());
+                              listweight!.add(widget.weight.toString());
+                              listprice!.add(widget.price.toString());
 
-                            
-      listimg.add(widget.productimg.toString());
-      listhindiname.add(widget.hindiname.toString());
-      listenglishname.add(widget.englishname.toString());
-      listweight.add(widget.weight.toString());
-      listprice.add(widget.price.toString());
+                              print("ok i liked it");
+                              print(likeid);
+                              print(listimg);
+                              print(listhindiname);
+                              print(listenglishname);
+                              print(listweight);
+                              print(listprice);
 
-      
-      
+                              SharedPreferences preferences =
+                                  await SharedPreferences.getInstance();
+                              preferences.setStringList('likeid', likeid!);
+                              preferences.setStringList('listimg', listimg!);
+                              preferences.setStringList(
+                                  'listhindiname', listhindiname!);
+                              preferences.setStringList(
+                                  'listenglishname', listenglishname!);
+                              preferences.setStringList(
+                                  'listweight', listweight!);
+                              preferences.setStringList('listprice', listprice!);
+                            },
+                            child: Icon(Icons.favorite_outlined,
+                                size: 30, color: like ? x : Colors.grey)),
 
-                            print("ok i liked it");
-                            print(likeid);
-      print(listimg);
-      print(listhindiname);
-      print(listenglishname);
-      print(listweight);
-      print(listprice);
-                            
-
-                             SharedPreferences preferences = await SharedPreferences.getInstance();
-                             preferences.setStringList('likeid',likeid);
-                             preferences.setStringList('listimg',listimg);
-                             preferences.setStringList('listhindiname',listhindiname);
-                             preferences.setStringList('listenglishname',listenglishname);
-                             preferences.setStringList('listweight',listweight);
-                             preferences.setStringList('listprice',listprice);
-
-   
-
-                          },
-                          child:
-                          Icon(Icons.favorite_outlined,size:30,color:like?x:Colors.grey)),
-                       
                         //Share(),
 //                         GestureDetector(
 //                           onTap:(){
@@ -402,24 +377,38 @@ setState((){
                     ),
                   ),
                   Row(
-                    children: [    
-                       Container(margin: EdgeInsets.only(left: 20),
-                          child: Text(widget.englishname,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w700),)),
-                      SizedBox(width:5),Container(margin: EdgeInsets.only(left: 20),
-                          child: Text(widget.hindiname, style:
-                                              TextStyle(color: Colors.black45),
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(left: 20),
+                          child: Text(
+                            widget.englishname,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w700),
+                          )),
+                      SizedBox(width: 5),
+                      Container(
+                          margin: EdgeInsets.only(left: 20),
+                          child: Text(
+                            widget.hindiname,
+                            style: TextStyle(color: Colors.black45),
                           )),
                     ],
                   ),
-                  Container(margin: EdgeInsets.only(left: 20,top: 20),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Container(
+                    margin: EdgeInsets.only(left: 20, top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                            child: Text("M.R.P :  ₹ ${widget.price}",)),
-                        Container(padding: EdgeInsets.all(8),
+                            child: Text(
+                          "M.R.P :  ₹ ${widget.price}",
+                        )),
+                        Container(
+                          padding: EdgeInsets.all(8),
                           margin: EdgeInsets.only(left: 10),
-                         // width: 150,
-                         // child: dropdown(),
+                          // width: 150,
+                          // child: dropdown(),
                         )
                       ],
                     ),
@@ -427,56 +416,72 @@ setState((){
                   Row(
                     children: [
                       Container(
-                        margin: EdgeInsets.only(top: 20,left: 20),
-                        child: Text(widget.weight, style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold)),
+                        margin: EdgeInsets.only(top: 20, left: 20),
+                        child: Text(widget.weight,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
-                  Container(height: 80,
-                  margin: EdgeInsets.only(top: 10),
-                  width: MediaQuery.of(context).size.width,
+                  Container(
+                    height: 80,
+                    margin: EdgeInsets.only(top: 10),
+                    width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
-                      border: Border(top:BorderSide(width: 3,color: Colors.grey[300]),bottom: BorderSide(width: 3,color: Colors.grey[300])),
+                      border: Border(
+                          top: BorderSide(width: 3, color: Colors.grey[300]!),
+                          bottom:
+                              BorderSide(width: 3, color: Colors.grey[300]!)),
                     ),
                     child: Column(
                       children: [
-                        SizedBox(height:10),
+                        SizedBox(height: 10),
                         Row(
                           children: [
                             Container(
-                              margin: EdgeInsets.only(top: 10,left: 20),
+                              margin: EdgeInsets.only(top: 10, left: 20),
                               child: Text("Quantity"),
                             ),
-                            Container(margin: EdgeInsets.only(top: 10,left: 40),
-                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            Container(
+                              margin: EdgeInsets.only(top: 10, left: 40),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  GestureDetector(onTap:(){
-                                    setState(() {
-                                      if (_indx ==0)
-                                      {
-                                        print("null value");
-                                      }
-                                      else
-                                        _indx--;
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        if (_indx == 0) {
+                                          print("null value");
+                                        } else
+                                          _indx--;
 
-                                      // y=_indx.toString();
-                                    });
-removeproduct(_indx.toString());
-                                  },
-                                    child: Container(margin: EdgeInsets.only(right: 7),
-                                        child: Icon(Icons.remove_circle,color: x,)),
+                                        // y=_indx.toString();
+                                      });
+                                      removeproduct(_indx.toString());
+                                    },
+                                    child: Container(
+                                        margin: EdgeInsets.only(right: 7),
+                                        child: Icon(
+                                          Icons.remove_circle,
+                                          color: x,
+                                        )),
                                   ),
                                   Text("$_indx"),
-                                  GestureDetector(onTap:(){
-                                    setState(() {
-                                      _indx++;
-                                    });
-                                     addproduct(_indx.toString());
-                                  },
-                                    child: Container(margin: EdgeInsets.only(left: 7),
-                                        child: Icon(Icons.add_circle,color: x,)),
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _indx++;
+                                      });
+                                      addproduct(_indx.toString());
+                                    },
+                                    child: Container(
+                                        margin: EdgeInsets.only(left: 7),
+                                        child: Icon(
+                                          Icons.add_circle,
+                                          color: x,
+                                        )),
                                   ),
                                 ],
                               ),
@@ -486,7 +491,6 @@ removeproduct(_indx.toString());
                       ],
                     ),
                   ),
-                  
                 ],
               ),
             ),
@@ -495,21 +499,16 @@ removeproduct(_indx.toString());
               minWidth: MediaQuery.of(context).size.width,
               height: 40.0,
               child: RaisedButton(
-                child: Text('Go to Cart', style: TextStyle(fontSize:16,color:Colors.white)),
+                child: Text('Go to Cart',
+                    style: TextStyle(fontSize: 16, color: Colors.white)),
                 color: x,
                 onPressed: () {
-
-                   Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => cart(
-                              )));
-
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => cart()));
                 },
-              )
-          ),
+              )),
         ],
-        ),
+      ),
     );
   }
 }
